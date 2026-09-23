@@ -1,22 +1,17 @@
-# PayByWallet for Flutter
+# 📦 PayByWallet for Flutter
 
-Accept merchant payments — by QR code or merchant ID — from inside your Flutter
-app, powered by the native TerraPay PayByWallet SDKs.
+This SDK, provided by TerraPay, enables seamless payment transactions between
+customers and merchants through the partner mobile application. It supports
+multiple payment methods, including QR code scanning and merchant ID–based
+payments, and is designed for easy integration with Flutter applications on
+Android and iOS.
 
-```text
-                 Your Flutter app
-                         │
-                 paybywallet_flutter
-                         │
-              ┌──────────┴──────────┐
-         iOS bridge            Android bridge
-              │                     │
-    TerraPayWalletClient        TerraPayClient
-  (TerraPayWalletSDK.xcframework)  (payByWallet .aar)
-```
+## 🚀 Features
 
-Both native SDKs are bundled in this package. You add one dependency — there are
-no frameworks to embed, no `.aar` to copy and no ProGuard rules to write.
+- QR Code and Merchant ID Payments.
+- Customizable User Experience with brand colors.
+- Launch SDK with a single entry point.
+- Easily embeddable into any Flutter app.
 
 ---
 
