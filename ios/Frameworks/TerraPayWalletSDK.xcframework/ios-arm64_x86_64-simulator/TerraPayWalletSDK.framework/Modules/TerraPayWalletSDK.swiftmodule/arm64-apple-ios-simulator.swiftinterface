@@ -1,0 +1,96 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.4 effective-5.10 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)
+// swift-module-flags: -target arm64-apple-ios15.0-simulator -enable-objc-interop -enable-library-evolution -language-mode 5 -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name TerraPayWalletSDK
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface -formal-cxx-interoperability-mode=off -interface-compiler-version 6.4
+import AVFoundation
+import DeveloperToolsSupport
+import EventKit
+import Foundation
+import Network
+import PhotosUI
+import Swift
+import SwiftUI
+@_exported import TerraPayWalletSDK
+import UIKit
+import WebKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+import os.log
+import os
+@objc public class TPPaymentStatus : ObjectiveC::NSObject, Swift::Codable {
+  @objc override dynamic public var description: Swift::String {
+    @objc get
+  }
+  @objc deinit
+  public func encode(to encoder: any Swift::Encoder) throws
+  required public init(from decoder: any Swift::Decoder) throws
+}
+@objc public class TPMerchant : ObjectiveC::NSObject, Swift::Codable {
+  @objc final public let merchantName: Swift::String?
+  @objc final public let subscriberAmount: Swift::String?
+  @objc final public let subscriberCurrency: Swift::String?
+  @objc public init(merchantName: Swift::String?, subscriberAmount: Swift::String?, subscriberCurrency: Swift::String?)
+  @objc deinit
+  public func encode(to encoder: any Swift::Encoder) throws
+  required public init(from decoder: any Swift::Decoder) throws
+}
+@objc public enum TPEnvironment : Swift::Int {
+  case sandbox
+  case production
+  public init?(rawValue: Swift::Int)
+  public typealias RawValue = Swift::Int
+  public var rawValue: Swift::Int {
+    get
+  }
+}
+public typealias TerraPayCompletionHandler = (TerraPayWalletSDK::TPLaunchType, TerraPayWalletSDK::TPErrorInfo?, TerraPayWalletSDK::TPMerchant?, TerraPayWalletSDK::TPPaymentStatus?) -> Swift::Void
+@objc @objcMembers final public class TerraPayWalletSDKConfig : ObjectiveC::NSObject {
+  @objc final public let controller: UIKit::UIViewController
+  @objc final public let accessToken: Swift::String
+  @objc final public let refreshToken: Swift::String
+  @objc final public let subscriberDialCode: Swift::String
+  @objc final public let subscriberCountry: Swift::String
+  @objc final public let subscriberCountryName: Swift::String
+  @objc final public let subscriberName: Swift::String
+  @objc final public let subscriberMSISDN: Swift::String
+  @objc final public let subscriberCurrency: Swift::String
+  @objc final public let walletBalance: Swift::String?
+  @objc final public let primaryColor: Swift::String
+  @objc final public let secondaryColor: Swift::String
+  @objc final public let environment: TerraPayWalletSDK::TPEnvironment
+  @objc public init(controller: UIKit::UIViewController, accessToken: Swift::String, refreshToken: Swift::String, subscriberDialCode: Swift::String, subscriberCountry: Swift::String, subscriberCountryName: Swift::String, subscriberName: Swift::String, subscriberMSISDN: Swift::String, subscriberCurrency: Swift::String, walletBalance: Swift::String? = nil, primaryColor: Swift::String, secondaryColor: Swift::String, environment: TerraPayWalletSDK::TPEnvironment)
+  @objc deinit
+}
+@objc @objcMembers final public class TPErrorInfo : ObjectiveC::NSObject {
+  @objc final public let code: Swift::String
+  @objc final public let message: Swift::String
+  @objc public init(code: Swift::String, message: Swift::String)
+  @objc deinit
+}
+@objc public enum TPLaunchType : Swift::Int {
+  case onPINAuthenticate
+  case onError
+  case cancelled
+  case onPaymentSuccess
+  case onPaymentFailure
+  case closed
+  public init?(rawValue: Swift::Int)
+  public typealias RawValue = Swift::Int
+  public var rawValue: Swift::Int {
+    get
+  }
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers final public class TerraPayWalletClient : ObjectiveC::NSObject {
+  @objc public static let shared: TerraPayWalletSDK::TerraPayWalletClient
+  @objc final public func launch(with config: TerraPayWalletSDK::TerraPayWalletSDKConfig, completionHandler: @escaping TerraPayWalletSDK::TerraPayCompletionHandler)
+  @objc final public func processPayment(controller: UIKit::UIViewController?, transactionId: Swift::String)
+  @objc final public func handleTransactionPIN(isSuccess: Swift::Bool, orderId: Swift::String)
+  @objc deinit
+}
+extension TerraPayWalletSDK::TPEnvironment : Swift::Equatable {}
+extension TerraPayWalletSDK::TPEnvironment : Swift::Hashable {}
+extension TerraPayWalletSDK::TPEnvironment : Swift::RawRepresentable {}
+extension TerraPayWalletSDK::TPLaunchType : Swift::Equatable {}
+extension TerraPayWalletSDK::TPLaunchType : Swift::Hashable {}
+extension TerraPayWalletSDK::TPLaunchType : Swift::RawRepresentable {}

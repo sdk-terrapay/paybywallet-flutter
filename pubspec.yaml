@@ -1,0 +1,27 @@
+name: paybywallet_flutter
+description: "Flutter bindings for the TerraPay PayByWallet SDKs (QR and merchant-ID payments) on Android and iOS."
+version: 1.0.0
+homepage: https://www.terrapay.com
+publish_to: none
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=3.3.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.terrapay.paybywallet_flutter
+        pluginClass: PayByWalletPlugin
+      ios:
+        pluginClass: PayByWalletPlugin

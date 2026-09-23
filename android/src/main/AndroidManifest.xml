@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- INTERNET / CAMERA / NFC come from the PayByWallet .aar manifest.
+         The SDK declares NFC host-card-emulation as *required*, which would keep
+         every embedding app off emulators and non-NFC handsets, so it is relaxed
+         here. Apps that genuinely require HCE can override it back. -->
+    <uses-feature
+        android:name="android.hardware.nfc.hce"
+        android:required="false"
+        tools:replace="android:required" />
+</manifest>

@@ -1,0 +1,10 @@
+framework module TerraPayWalletSDK {
+  umbrella header "TerraPayWalletSDK.h"
+  export *
+
+  module * { export * }
+}
+
+module TerraPayWalletSDK.Swift {
+  header "TerraPayWalletSDK-Swift.h"
+}
