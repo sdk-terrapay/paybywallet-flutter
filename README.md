@@ -24,11 +24,41 @@ further setup.
 dependencies:
   paybywallet_flutter:
     git:
-      url: git@github.com:sdk-terrapay/paybywallet-flutter.git
+      url: https://github.com/sdk-terrapay/paybywallet-flutter.git
       ref: v1.0.0
 ```
 
-Then `flutter pub get`. Pin `ref` to a tag so builds are reproducible.
+Then `flutter pub get`. Pin `ref` to a tag so builds are reproducible — pub
+caches by ref, so a moving branch gives different developers different code with
+no lockfile change to show for it.
+
+### Private-repo access
+
+`flutter pub get` shells out to `git clone` and cannot prompt for credentials, so
+git must already be able to authenticate non-interactively.
+
+**Developers** — store a personal access token once in the macOS keychain:
+
+```sh
+git config --global credential.helper osxkeychain
+git clone https://github.com/sdk-terrapay/paybywallet-flutter.git /tmp/pbw-auth-test
+# username: your GitHub username;  password: the PAT
+rm -rf /tmp/pbw-auth-test
+```
+
+Every later `flutter pub get` reuses the stored token.
+
+**CI** — inject the token without putting it in any file that gets committed:
+
+```sh
+git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+```
+
+The PAT needs only read access to this repository: `repo` scope on a classic
+token, or *Contents: Read-only* on a fine-grained one.
+
+> **Never** put the token in the `url:` in `pubspec.yaml`. That commits a live
+> credential to every app that depends on this package.
 
 ## Host app requirements
 
