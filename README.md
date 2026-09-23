@@ -13,12 +13,22 @@ Android and iOS.
 - Launch SDK with a single entry point.
 - Easily embeddable into any Flutter app.
 
----
+## 📲 Requirements
 
-## 1. Install
+- Flutter 3.3.0+ / Dart 3.9+
+- **Android** — minSdk 28, compileSdk 36, JDK 17
+- **iOS** — 15.0+, Xcode 15+
+
+Adding the package increases app size by roughly **+13.5 MB** on Android
+(arm64 release) and **+2.9 MB** on iOS. Most of the Android figure is the
+bundled QR-detection model, required for scanning to work on devices without
+Google Play Services.
+
+## 🔧 Installation
+
+Add the dependency to your `pubspec.yaml`:
 
 ```yaml
-# pubspec.yaml
 dependencies:
   paybywallet_flutter:
     git:
@@ -30,30 +40,24 @@ dependencies:
 flutter pub get
 ```
 
-Always pin `ref` to a release tag. Pub caches by ref, so tracking a branch would
-give your developers and your CI different code with nothing in
-`pubspec.lock` to show for it.
+Pin `ref` to a release tag. Pub caches by ref, so tracking a branch would give
+your developers and your CI different code with nothing in `pubspec.lock` to
+show for it.
 
-**App size impact** — roughly **+13.5 MB** on Android (arm64 release) and
-**+2.9 MB** on iOS. Most of the Android figure is the bundled QR-detection
-model, which is required for scanning to work on devices without Google Play
-Services.
+The native Android and iOS SDKs ship inside the package — there are no
+frameworks to embed, no `.aar` to copy and no ProGuard rules to add.
 
----
-
-## 2. Platform setup
+## 🛠️ Permissions and platform setup
 
 ### Android
 
-**Your `MainActivity` must extend `FlutterFragmentActivity`.** The SDK's UI is
-Compose-based and requires an `androidx.activity.ComponentActivity`. Flutter's
+Your `MainActivity` **must** extend `FlutterFragmentActivity`. The SDK's UI is
+Compose-based and requires an `androidx.activity.ComponentActivity`; Flutter's
 default `FlutterActivity` extends plain `android.app.Activity`, so without this
-change the first `launch()` call fails with `INVALID_CONTEXT`.
+the first `launch()` fails with `INVALID_CONTEXT`.
 
 ```kotlin
 // android/app/src/main/kotlin/<your>/<package>/MainActivity.kt
-package com.example.yourapp
-
 import io.flutter.embedding.android.FlutterFragmentActivity
 
 class MainActivity : FlutterFragmentActivity()
@@ -63,12 +67,10 @@ class MainActivity : FlutterFragmentActivity()
 // android/app/build.gradle.kts
 android {
     compileSdk = 36
-
     defaultConfig {
         minSdk = 28          // required by the SDK
         targetSdk = 36
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -77,29 +79,29 @@ android {
 }
 ```
 
-Build with **JDK 17**. Permissions (internet, camera, NFC) and the R8 keep-rules
-are contributed by this package automatically.
+Internet, camera and NFC permissions, and the R8 keep-rules, are contributed by
+the package automatically.
 
 ### iOS
 
-Set the deployment target to **15.0** in `ios/Podfile`:
+Set the deployment target in `ios/Podfile`:
 
 ```ruby
 platform :ios, '15.0'
 ```
 
-Add the camera usage string to `ios/Runner/Info.plist` — the app is rejected at
-review, and crashes at runtime, without it:
+`Info.plist` must contain `NSCameraUsageDescription` with a string explaining
+how the app uses the camera — the app crashes at runtime and is rejected at
+review without it:
 
 ```xml
 <key>NSCameraUsageDescription</key>
-<string>This allows the app to scan merchant QR codes.</string>
+<string>This will allow <your-app-name> to scan QR Code.</string>
 ```
 
-**On iOS 26 and later** your app must declare a scene manifest, which Flutter's
-template does not yet generate. Without it the app launches to a blank white
-screen and is terminated, with no Dart output to explain why. Add to
-`Info.plist`:
+**On iOS 26 and later** the app must also declare a scene manifest, which
+Flutter's template does not yet generate. Without it the app launches to a blank
+white screen and is terminated, with no Dart output to explain why:
 
 ```xml
 <key>UIApplicationSceneManifest</key>
@@ -120,13 +122,13 @@ screen and is terminated, with no Dart output to explain why. Add to
 </dict>
 ```
 
----
+## 🔐 Authentication (OAuth2)
 
-## 3. Get an access token
+The SDK requires OAuth2 authentication. Your application must obtain both an
+**access token** and a **refresh token** before launching the SDK, and pass both
+in during initialization.
 
-The SDK is authenticated with an OAuth2 token pair that **your backend**
-obtains. Do not ship the gateway credentials inside your app — anything
-compiled into an APK or IPA can be extracted.
+**Token generation endpoint**
 
 ```
 GET {base-url}/eig/getToken?subscriberid=%2B254712345678
@@ -134,12 +136,14 @@ user: <supplied by TerraPay>
 password: <supplied by TerraPay>
 ```
 
+**Sample response**
+
 ```json
 {
   "status": "OK",
   "subStatus": "Success",
-  "access_token": "eyJhbGciOi…",
-  "refresh_token": "eyJhbGciOi…",
+  "access_token": "eyJhbGciOiJIUzI1NiJ9…",
+  "refresh_token": "eyJhbGciOiJIUzI1NiJ9…",
   "expiry": "300"
 }
 ```
@@ -154,11 +158,14 @@ Two details that commonly cause failures:
 
 Refresh before expiry to keep long sessions alive.
 
+> Perform this call from **your backend** and have the app fetch the token pair
+> from your own API. Credentials compiled into an app can be extracted from the
+> APK or IPA.
+
 ### Reference implementation
 
-In production this call belongs on your server, and your app fetches the token
-pair from your own API. The Dart below is the same request, useful for a
-prototype or to check your credentials end to end:
+The same request in Dart, useful for a prototype or to verify your credentials
+end to end:
 
 ```dart
 import 'dart:convert';
@@ -172,7 +179,7 @@ class TokenPair {
 }
 
 Future<TokenPair> fetchToken({
-  required String baseUrl,       // see "Choose an environment" below
+  required String baseUrl,       // see Environments below
   required String user,          // supplied by TerraPay
   required String password,      // supplied by TerraPay
   required String dialCode,      // '+254'
@@ -214,9 +221,7 @@ Future<TokenPair> fetchToken({
 
 Requires `http: ^1.6.0` in your `pubspec.yaml`.
 
----
-
-## 4. Choose an environment
+## 🌍 Environments
 
 | Environment | Token endpoint (`baseUrl`) |
 | --- | --- |
@@ -225,9 +230,6 @@ Requires `http: ^1.6.0` in your `pubspec.yaml`.
 
 Production requires separate credentials — your UAT `user` / `password` pair
 will not authenticate against it.
-
-The same `baseUrl` serves `getToken`; the SDK reaches its own endpoints
-internally.
 
 **iOS** switches at runtime through the config:
 
@@ -238,27 +240,43 @@ PayByWalletConfig(
 )
 ```
 
-**Android ignores this field.** The endpoint is compiled into the bundled
-native SDK, and the build shipped in this package targets **UAT**. Going live on
+**Android ignores this field.** The endpoint is compiled into the bundled native
+SDK, and the build shipped in this package targets **UAT**. Going live on
 Android therefore needs a production build of the package from TerraPay — it is
-not a code change on your side. Plan for it: an app that works against UAT on
-both platforms will still hit UAT on Android after you flip `environment` to
-`production`, with no error to indicate it.
+not a code change on your side. An app that works against UAT on both platforms
+will still hit UAT on Android after you flip `environment` to `production`, with
+no error to indicate it. Request production credentials and a production build
+from sdk-support@terrapay.com before your go-live date.
 
-Request production credentials and a production build from
-sdk-support@terrapay.com before your go-live date.
+## 🛠️ Usage
 
-> The app-side `baseUrl` above is only used for `getToken`. In production that
-> call belongs on your server, so the URL and the credentials never reach the
-> handset.
+### Config params validation
 
----
+| Parameter | Required | Validation rule |
+| --- | --- | --- |
+| `accessToken` | Yes | OAuth2 access token from your backend |
+| `refreshToken` | Yes | OAuth2 refresh token from your backend |
+| `subscriberDialCode` | Yes | Must match the pattern `^\+\d+$` |
+| `subscriberMsisdn` | Yes | Digits only, no dial code; length validated per country |
+| `subscriberName` | Yes | Must not be empty |
+| `subscriberCountry` | Yes | Valid ISO 3166-1 alpha-2 country code |
+| `subscriberCountryName` | Yes | Must not be empty |
+| `subscriberCurrency` | Yes | Valid ISO 4217 currency code |
+| `walletBalance` | Yes | Must not be null; numeric |
+| `primaryColor` | Yes | Valid 6-digit hex code (e.g. `EC1B24`) |
+| `secondaryColor` | Yes | Valid 6-digit hex code (e.g. `FFFFFF`) |
+| `referenceNumber` | No | Your own reference. **Android only** |
+| `environment` | No | `sandbox` (default) or `production`. **iOS only** |
 
-## 5. Launch the SDK
+#### 1. Import the SDK
 
 ```dart
 import 'package:paybywallet_flutter/paybywallet_flutter.dart';
+```
 
+#### 2. Initialize and launch the SDK
+
+```dart
 final sdk = PayByWalletSdk.instance;
 
 await sdk.launch(PayByWalletConfig(
@@ -277,32 +295,12 @@ await sdk.launch(PayByWalletConfig(
 ```
 
 `launch()` validates the configuration natively and throws a
-`PlatformException` if it is rejected, so you can `await` it and show the error
-immediately rather than waiting for a callback.
+`PlatformException` if it is rejected, so you can `await` it and surface the
+error immediately rather than waiting for a callback.
 
-### Configuration reference
+#### 3. Handle the SDK results
 
-| Parameter | Required | Rule |
-| --- | --- | --- |
-| `accessToken` | yes | from `getToken` |
-| `refreshToken` | yes | from `getToken` |
-| `subscriberDialCode` | yes | matches `^\+\d+$`, e.g. `+254` |
-| `subscriberMsisdn` | yes | digits only, no dial code; length validated per country |
-| `subscriberName` | yes | non-empty |
-| `subscriberCountry` | yes | ISO 3166-1 alpha-2, e.g. `KE` |
-| `subscriberCountryName` | yes | non-empty, e.g. `Kenya` |
-| `subscriberCurrency` | yes | ISO 4217, e.g. `KES` |
-| `walletBalance` | yes | number |
-| `primaryColor` | yes | 6-digit hex, no `#`, e.g. `52B44A` |
-| `secondaryColor` | yes | 6-digit hex, no `#`, e.g. `FFFFFF` |
-| `referenceNumber` | no | your own reference. **Android only** |
-| `environment` | no | `sandbox` (default) or `production`. **iOS only** — on Android the endpoint is fixed in the bundled SDK build |
-
----
-
-## 6. Handle the result
-
-Subscribe before calling `launch()`. Events arrive as a typed stream:
+Subscribe before calling `launch()`. Callbacks arrive as a typed stream:
 
 ```dart
 late final StreamSubscription<PayByWalletEvent> _sub;
@@ -313,27 +311,25 @@ void initState() {
   _sub = sdk.events.listen((event) async {
     switch (event) {
       case PinAuthenticateEvent(:final merchant):
-        // The SDK has handed control back to you. Authenticate the user with
-        // your own PIN / biometric screen, then confirm the payment.
+        // PIN/OTP authentication is required. Open your own PIN screen,
+        // validate the user, then confirm the payment.
         final ok = await showMyPinScreen(merchant);
         if (ok) await sdk.processPayment(generateOrderId());
 
       case PaymentSuccessEvent(:final result):
-        showReceipt(result);
+        showReceipt(result);          // transaction succeeded
 
       case PaymentFailureEvent(:final result):
-        showFailure(result);
+        showFailure(result);          // transaction failed
 
       case SdkErrorEvent(:final code, :final message):
-        showError('$code: $message');
+        showError('$code: $message'); // invalid parameters or SDK error
 
       case SdkCancelledEvent():
-        // user backed out
-        break;
+        break;                        // user cancelled the flow
 
       case SdkClosedEvent():
-        // iOS only: SDK UI dismissed with no terminal payment state
-        break;
+        break;                        // iOS only: UI dismissed, no result
     }
   });
 }
@@ -345,73 +341,58 @@ void dispose() {
 }
 ```
 
-### The PIN step
+#### 4. Process payment after PIN verified
 
-**The SDK never collects the user's PIN.** When the user confirms an amount it
-raises `PinAuthenticateEvent` with the merchant details and returns control to
-your app. You authenticate the user however your wallet normally does, then call:
+**The SDK never collects the user's PIN.** On `PinAuthenticateEvent` it returns
+the merchant details and hands control back to your app. Authenticate the user
+however your wallet normally does, then call:
 
 ```dart
 await sdk.processPayment(orderId);
 ```
 
-`orderId` must be **unique per transaction** and alphanumeric, e.g.
-`TXN` followed by 12 digits. Reusing an id will cause the payment to be
-rejected.
+`orderId` must be **unique per transaction** and alphanumeric — for example
+`TXN` followed by 12 digits. Reusing an id causes the payment to be rejected.
 
-`MerchantDetails` gives you `merchantName`, `amount` and `currency` so you can
+`MerchantDetails` provides `merchantName`, `amount` and `currency` so you can
 show what is being paid on your own confirmation screen.
 
----
-
-## 7. Error codes
+## ⚠️ Error codes
 
 `SdkErrorEvent.code`, and the `code` on a thrown `PlatformException`:
 
 | Code | Meaning |
 | --- | --- |
-| `INVALID_CONTEXT` | `MainActivity` does not extend `FlutterFragmentActivity` (see §2) |
+| `INVALID_CONTEXT` | `MainActivity` does not extend `FlutterFragmentActivity` |
 | `INVALID_DIAL_CODE` | `subscriberDialCode` is not `+` followed by digits |
 | `INVALID_MSISDN` | MSISDN empty, non-numeric, or wrong length for the country |
 | `INVALID_NAME` | `subscriberName` is empty |
-| `INVALID_COUNTRY_CODE` | not a valid ISO 3166-1 alpha-2 code |
+| `INVALID_COUNTRY_CODE` | Not a valid ISO 3166-1 alpha-2 code |
 | `INVALID_COUNTRY_NAME` | `subscriberCountryName` is empty |
-| `INVALID_CURRENCY` | not a valid ISO 4217 code |
-| `INVALID_WALLET_BALANCE` | balance missing or not a number |
-| `INVALID_PRIMARY_COLOR` | not a 6-digit hex value |
-| `INVALID_SECONDARY_COLOR` | not a 6-digit hex value |
+| `INVALID_CURRENCY` | Not a valid ISO 4217 code |
+| `INVALID_WALLET_BALANCE` | Balance missing or not a number |
+| `INVALID_PRIMARY_COLOR` | Not a 6-digit hex value |
+| `INVALID_SECONDARY_COLOR` | Not a 6-digit hex value |
 | `INVALID_TRANSACTION_ID` | `processPayment` called with an empty order id |
-| `NETWORK_ERROR` | the device could not reach the gateway |
-| `SDK_CLOSED` | the SDK flow was closed before completing |
+| `NETWORK_ERROR` | The device could not reach the gateway |
+| `SDK_CLOSED` | The SDK flow closed before completing |
 
----
-
-## 8. Troubleshooting
+## 🧩 Troubleshooting
 
 | Symptom | Cause |
 | --- | --- |
-| `INVALID_CONTEXT` on first launch | `MainActivity` still extends `FlutterActivity`. See §2. |
-| `MissingPluginException … com.terrapay.paybywallet/sdk` | Full restart needed after adding the dependency — hot reload does not register plugins. |
-| App installs but shows a blank white screen on iOS 26+ | Missing `UIApplicationSceneManifest`. See §2. |
-| Camera preview is black, or the app crashes when scanning | `NSCameraUsageDescription` missing, or camera permission denied in system settings. |
-| Release build works but payments silently fail | Custom ProGuard rules are stripping the SDK. This package ships the required keep-rules; do not exclude them. |
-| Gradle fails with a bare version number | Wrong JDK. Build with JDK 17. |
+| `INVALID_CONTEXT` on first launch | `MainActivity` still extends `FlutterActivity` |
+| `MissingPluginException … com.terrapay.paybywallet/sdk` | Full restart needed after adding the dependency — hot reload does not register plugins |
+| Blank white screen on iOS 26+ | Missing `UIApplicationSceneManifest` |
+| Camera preview black, or crash when scanning | `NSCameraUsageDescription` missing, or camera permission denied |
+| Release build works but payments silently fail | Custom ProGuard rules stripping the SDK — the package ships the required keep-rules, do not exclude them |
+| Gradle fails with a bare version number | Wrong JDK; build with JDK 17 |
 
----
+## 🔐 License
 
-## Requirements summary
+This SDK is proprietary and intended for internal or authorized use only. For
+licensing, please contact TerraPay. See [LICENSE](LICENSE).
 
-| | |
-| --- | --- |
-| Flutter | 3.3.0+ |
-| Dart | 3.9+ |
-| Android | minSdk 28, compileSdk 36, JDK 17, `FlutterFragmentActivity` |
-| iOS | 15.0+, camera usage string, scene manifest on iOS 26+ |
+## 📬 Contact
 
-## Support
-
-sdk-support@terrapay.com
-
-## License
-
-Proprietary. See [LICENSE](LICENSE).
+For support or inquiries, email: sdk-support@terrapay.com
