@@ -1,4 +1,4 @@
-# 📦 PayByWallet for Flutter
+# 📦 TerraPay PayByWallet SDK for Flutter
 
 This SDK, provided by TerraPay, enables seamless payment transactions between
 customers and merchants through the partner mobile application. It supports
