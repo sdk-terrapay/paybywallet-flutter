@@ -1,0 +1,8 @@
+# The bundled native SDKs are third-party binaries, not source of this package.
+# Excluding them from Linguist stops GitHub classifying the repo by the headers
+# inside the xcframework, and keeps diffs from trying to render binary blobs.
+android/libs/**          linguist-vendored
+ios/Frameworks/**        linguist-vendored
+
+*.aar        binary
+*.xcframework binary
