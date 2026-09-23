@@ -28,7 +28,7 @@ dependencies:
   paybywallet_flutter:
     git:
       url: https://github.com/sdk-terrapay/paybywallet-flutter.git
-      ref: v1.0.1
+      ref: v1.0.0
 ```
 
 ```sh
