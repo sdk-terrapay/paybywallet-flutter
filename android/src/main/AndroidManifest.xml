@@ -9,4 +9,18 @@
         android:name="android.hardware.nfc.hce"
         android:required="false"
         tools:replace="android:required" />
+
+    <application>
+        <!-- The SDK declares PaymentsHomeActivity with an android:label but no
+             android:theme, so it falls back to the platform default, which has an
+             ActionBar. That renders a stray bar showing the SDK's internal
+             "PaymentsHome" label above the SDK's own green header. Merging a
+             NoActionBar theme onto the existing declaration removes the bar and
+             changes nothing else: DeviceDefault is the theme it already resolves
+             to. -->
+        <activity
+            android:name="com.terrapay.payByWallet.PaymentsHomeActivity"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            tools:node="merge" />
+    </application>
 </manifest>

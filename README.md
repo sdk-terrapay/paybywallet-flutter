@@ -109,6 +109,12 @@ build), so switching to production there means swapping the `.aar`.
   dependencies are pinned by hand in `android/build.gradle`; re-derive them with
   `jdeps -verbose:package` over the `.aar`'s `classes.jar` whenever it is
   refreshed.
+* **`android/src/main/AndroidManifest.xml` merges a `NoActionBar` theme onto the
+  SDK's `PaymentsHomeActivity`.** The SDK declares that activity with an
+  `android:label` but no `android:theme`, so it falls back to the platform
+  default, which has an ActionBar — rendering a stray bar showing the SDK's
+  internal "PaymentsHome" label above the SDK's own header in every embedding
+  app. Remove the override only if the SDK starts theming its own activity.
 * **Do not swap ML Kit for the unbundled variant.** `barcode-scanning` bundles a
   ~4.7 MB detection model and is the single biggest contributor to app size, so
   `play-services-mlkit-barcode-scanning` looks like an easy ~6 MB saving. It is
