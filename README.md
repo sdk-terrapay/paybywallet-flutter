@@ -28,7 +28,7 @@ dependencies:
   paybywallet_flutter:
     git:
       url: https://github.com/sdk-terrapay/paybywallet-flutter.git
-      ref: v1.0.0
+      ref: v1.0.1
 ```
 
 ```sh
@@ -38,10 +38,6 @@ flutter pub get
 Always pin `ref` to a release tag. Pub caches by ref, so tracking a branch would
 give your developers and your CI different code with nothing in
 `pubspec.lock` to show for it.
-
-> If you were given credentials to access this repository, configure git before
-> running `flutter pub get` — it shells out to `git clone` and cannot prompt you.
-> See [Private repository access](#appendix-private-repository-access).
 
 **App size impact** — roughly **+13.5 MB** on Android (arm64 release) and
 **+2.9 MB** on iOS. Most of the Android figure is the bundled QR-detection
@@ -404,33 +400,7 @@ show what is being paid on your own confirmation screen.
 | App installs but shows a blank white screen on iOS 26+ | Missing `UIApplicationSceneManifest`. See §2. |
 | Camera preview is black, or the app crashes when scanning | `NSCameraUsageDescription` missing, or camera permission denied in system settings. |
 | Release build works but payments silently fail | Custom ProGuard rules are stripping the SDK. This package ships the required keep-rules; do not exclude them. |
-| `flutter pub get` fails with `Repository not found` | Git credentials not configured. See the appendix. |
 | Gradle fails with a bare version number | Wrong JDK. Build with JDK 17. |
-
----
-
-## Appendix: private repository access
-
-Only applies while this repository is private. `flutter pub get` cannot prompt
-for credentials, so git must authenticate without interaction.
-
-**Developers** — store your token once:
-
-```sh
-git config --global credential.helper osxkeychain      # macOS
-git clone https://github.com/sdk-terrapay/paybywallet-flutter.git /tmp/auth-test
-# username: your GitHub username;  password: your access token
-rm -rf /tmp/auth-test
-```
-
-**CI** — inject the token without committing it anywhere:
-
-```sh
-git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "https://github.com/"
-```
-
-Never put the token in the `url:` in `pubspec.yaml` — that commits a live
-credential into your repository.
 
 ---
 
