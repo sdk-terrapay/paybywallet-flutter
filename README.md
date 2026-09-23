@@ -390,8 +390,7 @@ show what is being paid on your own confirmation screen.
 
 ## 🔐 License
 
-This SDK is proprietary and intended for internal or authorized use only. For
-licensing, please contact TerraPay. See [LICENSE](LICENSE).
+Released under the MIT License. See [LICENSE](LICENSE).
 
 ## 📬 Contact
 

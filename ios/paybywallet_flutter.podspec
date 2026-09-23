@@ -11,7 +11,7 @@ Merchant payments by QR code or merchant ID, backed by the native
 TerraPayWalletSDK.
                        DESC
   s.homepage         = 'https://www.terrapay.com'
-  s.license          = { :type => 'Proprietary', :file => '../LICENSE' }
+  s.license          = { :type => 'MIT', :file => '../LICENSE' }
   s.author           = { 'TerraPay' => 'sdk-support@terrapay.com' }
   s.source           = { :path => '.' }
 
