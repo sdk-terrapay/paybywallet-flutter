@@ -230,7 +230,10 @@ Requires `http: ^1.6.0` in your `pubspec.yaml`.
 | Environment | Token endpoint (`baseUrl`) |
 | --- | --- |
 | UAT / sandbox | `https://uat-connect.terrapay.com:27211` |
-| Production | supplied by TerraPay with your live credentials |
+| Production | `https://api-payments.terrapay.com:27211` |
+
+Production requires separate credentials — your UAT `user` / `password` pair
+will not authenticate against it.
 
 The same `baseUrl` serves `getToken`; the SDK reaches its own endpoints
 internally.
@@ -253,6 +256,10 @@ both platforms will still hit UAT on Android after you flip `environment` to
 
 Request production credentials and a production build from
 sdk-support@terrapay.com before your go-live date.
+
+> The app-side `baseUrl` above is only used for `getToken`. In production that
+> call belongs on your server, so the URL and the credentials never reach the
+> handset.
 
 ---
 
