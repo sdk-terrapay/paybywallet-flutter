@@ -108,6 +108,15 @@ dependencies {
     implementation "androidx.camera:camera-camera2:1.5.1"
     implementation "androidx.camera:camera-lifecycle:1.5.1"
     implementation "androidx.camera:camera-view:1.5.1"
+    // Bundled barcode scanning: ships the ~4.7 MB detection model inside the
+    // APK. Do NOT swap this for
+    // "com.google.android.gms:play-services-mlkit-barcode-scanning" to save the
+    // space -- that variant loads the detector from Play Services, and on
+    // devices without it (verified on a Huawei handset, 2026-09-23) scanning
+    // dies with "No acceptable module com.google.android.gms.vision.dynamite
+    // found. Local version is 0 and remote version is 0." The camera preview
+    // still runs, so a framed QR is simply never detected -- a silent failure.
+    // Huawei and other non-GMS handsets are core devices for this SDK.
     implementation "com.google.mlkit:barcode-scanning:17.3.0"
     implementation "com.google.android.gms:play-services-code-scanner:16.1.0"
     implementation "com.google.zxing:core:3.5.4"

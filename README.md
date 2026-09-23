@@ -109,6 +109,14 @@ build), so switching to production there means swapping the `.aar`.
   dependencies are pinned by hand in `android/build.gradle`; re-derive them with
   `jdeps -verbose:package` over the `.aar`'s `classes.jar` whenever it is
   refreshed.
+* **Do not swap ML Kit for the unbundled variant.** `barcode-scanning` bundles a
+  ~4.7 MB detection model and is the single biggest contributor to app size, so
+  `play-services-mlkit-barcode-scanning` looks like an easy ~6 MB saving. It is
+  not: that variant loads the detector from Play Services, and on a handset
+  without it the camera preview still runs while a framed QR is simply never
+  detected — a silent failure, logged only as *"No acceptable module
+  com.google.android.gms.vision.dynamite found"*. Verified broken on a Huawei
+  device (2026-09-23). Non-GMS handsets are core devices for this SDK.
 * **`android/consumer-rules.pro`** — the shipped `.aar` has no `proguard.txt`, so
   these rules are what stop R8 from obfuscating the SDK in embedding apps' release
   builds. Gson maps the SDK's DTOs by *field name* (none carry
