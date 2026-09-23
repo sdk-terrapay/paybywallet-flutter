@@ -157,15 +157,106 @@ Two details that commonly cause failures:
 
 - `subscriberid` is the **dial code plus MSISDN** (`+254712345678`), and the
   leading `+` must be percent-encoded as `%2B`. Sent raw it arrives as a space
-  and the request fails.
+  and the lookup fails.
 - `expiry` is returned as a **string** (`"300"`, seconds), not a number. Parsing
-  it as an integer without coercion throws.
+  it straight into an `int` throws.
 
-Refresh before expiry to keep long sessions working.
+Refresh before expiry to keep long sessions alive.
+
+### Reference implementation
+
+In production this call belongs on your server, and your app fetches the token
+pair from your own API. The Dart below is the same request, useful for a
+prototype or to check your credentials end to end:
+
+```dart
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class TokenPair {
+  const TokenPair(this.accessToken, this.refreshToken, this.expiresIn);
+  final String accessToken;
+  final String refreshToken;
+  final Duration expiresIn;
+}
+
+Future<TokenPair> fetchToken({
+  required String baseUrl,       // see "Choose an environment" below
+  required String user,          // supplied by TerraPay
+  required String password,      // supplied by TerraPay
+  required String dialCode,      // '+254'
+  required String msisdn,        // '712345678'
+}) async {
+  // `replace(queryParameters:)` percent-encodes the leading '+' as %2B.
+  // Interpolating it straight into the URL string does not, and the
+  // gateway then receives a space.
+  final uri = Uri.parse('$baseUrl/eig/getToken')
+      .replace(queryParameters: {'subscriberid': '$dialCode$msisdn'});
+
+  final response = await http.get(uri, headers: {
+    'user': user,
+    'password': password,
+    'Accept': 'application/json',
+  }).timeout(const Duration(seconds: 30));
+
+  if (response.statusCode != 200) {
+    throw Exception('Token request failed: HTTP ${response.statusCode}');
+  }
+
+  final body = jsonDecode(response.body) as Map<String, dynamic>;
+  final accessToken = body['access_token'] as String? ?? '';
+  if (accessToken.isEmpty) {
+    throw Exception('Token rejected: ${body['subStatus'] ?? body['status']}');
+  }
+
+  // `expiry` arrives as a String, so coerce rather than cast.
+  final rawExpiry = body['expiry'];
+  final seconds = rawExpiry is int ? rawExpiry : int.tryParse('$rawExpiry') ?? 300;
+
+  return TokenPair(
+    accessToken,
+    body['refresh_token'] as String? ?? '',
+    Duration(seconds: seconds),
+  );
+}
+```
+
+Requires `http: ^1.6.0` in your `pubspec.yaml`.
 
 ---
 
-## 4. Launch the SDK
+## 4. Choose an environment
+
+| Environment | Token endpoint (`baseUrl`) |
+| --- | --- |
+| UAT / sandbox | `https://uat-connect.terrapay.com:27211` |
+| Production | supplied by TerraPay with your live credentials |
+
+The same `baseUrl` serves `getToken`; the SDK reaches its own endpoints
+internally.
+
+**iOS** switches at runtime through the config:
+
+```dart
+PayByWalletConfig(
+  // ...
+  environment: PayByWalletEnvironment.production,   // default: sandbox
+)
+```
+
+**Android ignores this field.** The endpoint is compiled into the bundled
+native SDK, and the build shipped in this package targets **UAT**. Going live on
+Android therefore needs a production build of the package from TerraPay — it is
+not a code change on your side. Plan for it: an app that works against UAT on
+both platforms will still hit UAT on Android after you flip `environment` to
+`production`, with no error to indicate it.
+
+Request production credentials and a production build from
+sdk-support@terrapay.com before your go-live date.
+
+---
+
+## 5. Launch the SDK
 
 ```dart
 import 'package:paybywallet_flutter/paybywallet_flutter.dart';
@@ -211,7 +302,7 @@ immediately rather than waiting for a callback.
 
 ---
 
-## 5. Handle the result
+## 6. Handle the result
 
 Subscribe before calling `launch()`. Events arrive as a typed stream:
 
@@ -275,7 +366,7 @@ show what is being paid on your own confirmation screen.
 
 ---
 
-## 6. Error codes
+## 7. Error codes
 
 `SdkErrorEvent.code`, and the `code` on a thrown `PlatformException`:
 
@@ -297,7 +388,7 @@ show what is being paid on your own confirmation screen.
 
 ---
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Symptom | Cause |
 | --- | --- |
