@@ -20,6 +20,13 @@ TerraPayWalletSDK.
 
   # The pre-built SDK travels with the plugin, so embedding apps need no
   # manual framework wiring.
+  #
+  # The xcframework's dSYMs/ directories are stripped: Xcode discards them when
+  # packaging an app, so they changed nothing in the build while costing ~13 MB
+  # in every clone. Re-strip after refreshing the xcframework:
+  #   rm -rf ios/Frameworks/TerraPayWalletSDK.xcframework/*/dSYMs
+  # The symbols remain in the SDK source repo if an SDK-internal crash ever
+  # needs symbolicating.
   s.vendored_frameworks = 'Frameworks/TerraPayWalletSDK.xcframework'
 
   # The SDK is built for iOS 15.0+.
