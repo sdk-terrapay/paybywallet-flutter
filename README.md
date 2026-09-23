@@ -1,26 +1,29 @@
-# paybywallet_flutter
+# PayByWallet for Flutter
 
-Flutter bindings for the TerraPay PayByWallet SDKs — merchant payments by QR
-code or merchant ID, on Android and iOS.
+Accept merchant payments — by QR code or merchant ID — from inside your Flutter
+app, powered by the native TerraPay PayByWallet SDKs.
 
 ```text
-                 Flutter (this package)
-                          |
-               +----------+----------+
-               |                     |
+                 Your Flutter app
+                         │
+                 paybywallet_flutter
+                         │
+              ┌──────────┴──────────┐
          iOS bridge            Android bridge
-               |                     |
-    TerraPayWalletClient         TerraPayClient
-   (TerraPayWalletSDK.xcframework)  (payByWallet .aar)
+              │                     │
+    TerraPayWalletClient        TerraPayClient
+  (TerraPayWalletSDK.xcframework)  (payByWallet .aar)
 ```
 
-Both native SDKs are **bundled in this package** — apps add one dependency and
-get the binaries, the transitive dependencies and the R8 keep-rules with no
-further setup.
+Both native SDKs are bundled in this package. You add one dependency — there are
+no frameworks to embed, no `.aar` to copy and no ProGuard rules to write.
 
-## Install
+---
+
+## 1. Install
 
 ```yaml
+# pubspec.yaml
 dependencies:
   paybywallet_flutter:
     git:
@@ -28,80 +31,146 @@ dependencies:
       ref: v1.0.0
 ```
 
-Then `flutter pub get`. Pin `ref` to a tag so builds are reproducible — pub
-caches by ref, so a moving branch gives different developers different code with
-no lockfile change to show for it.
-
-### Private-repo access
-
-`flutter pub get` shells out to `git clone` and cannot prompt for credentials, so
-git must already be able to authenticate non-interactively.
-
-**Developers** — store a personal access token once in the macOS keychain:
-
 ```sh
-git config --global credential.helper osxkeychain
-git clone https://github.com/sdk-terrapay/paybywallet-flutter.git /tmp/pbw-auth-test
-# username: your GitHub username;  password: the PAT
-rm -rf /tmp/pbw-auth-test
+flutter pub get
 ```
 
-Every later `flutter pub get` reuses the stored token.
+Always pin `ref` to a release tag. Pub caches by ref, so tracking a branch would
+give your developers and your CI different code with nothing in
+`pubspec.lock` to show for it.
 
-**CI** — inject the token without putting it in any file that gets committed:
+> If you were given credentials to access this repository, configure git before
+> running `flutter pub get` — it shells out to `git clone` and cannot prompt you.
+> See [Private repository access](#appendix-private-repository-access).
 
-```sh
-git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
-```
+**App size impact** — roughly **+13.5 MB** on Android (arm64 release) and
+**+2.9 MB** on iOS. Most of the Android figure is the bundled QR-detection
+model, which is required for scanning to work on devices without Google Play
+Services.
 
-The PAT needs only read access to this repository: `repo` scope on a classic
-token, or *Contents: Read-only* on a fine-grained one.
+---
 
-> **Never** put the token in the `url:` in `pubspec.yaml`. That commits a live
-> credential to every app that depends on this package.
+## 2. Platform setup
 
-## Host app requirements
+### Android
 
-**Android — `MainActivity` must extend `FlutterFragmentActivity`.** The SDK's UI
-is Compose-based and rejects any context that is not an
-`androidx.activity.ComponentActivity`. Flutter's default `FlutterActivity`
-extends plain `android.app.Activity`, so without this the first `launch()` fails
-with `INVALID_CONTEXT`.
+**Your `MainActivity` must extend `FlutterFragmentActivity`.** The SDK's UI is
+Compose-based and requires an `androidx.activity.ComponentActivity`. Flutter's
+default `FlutterActivity` extends plain `android.app.Activity`, so without this
+change the first `launch()` call fails with `INVALID_CONTEXT`.
 
 ```kotlin
+// android/app/src/main/kotlin/<your>/<package>/MainActivity.kt
+package com.example.yourapp
+
 import io.flutter.embedding.android.FlutterFragmentActivity
 
 class MainActivity : FlutterFragmentActivity()
 ```
 
-Your app's `minSdk` must be **28** or higher, and `compileSdk` **36**.
+```kotlin
+// android/app/build.gradle.kts
+android {
+    compileSdk = 36
 
-**iOS** needs `NSCameraUsageDescription` in `Info.plist` (QR scanning), a
-deployment target of **15.0+**, and — on iOS 26+ SDKs — a
-`UIApplicationSceneManifest`, which Flutter's template does not yet ship.
+    defaultConfig {
+        minSdk = 28          // required by the SDK
+        targetSdk = 36
+    }
 
-## Usage
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions { jvmTarget = "17" }
+}
+```
 
-Your app fetches the OAuth2 token pair; this package never talks to the gateway
-itself.
+Build with **JDK 17**. Permissions (internet, camera, NFC) and the R8 keep-rules
+are contributed by this package automatically.
+
+### iOS
+
+Set the deployment target to **15.0** in `ios/Podfile`:
+
+```ruby
+platform :ios, '15.0'
+```
+
+Add the camera usage string to `ios/Runner/Info.plist` — the app is rejected at
+review, and crashes at runtime, without it:
+
+```xml
+<key>NSCameraUsageDescription</key>
+<string>This allows the app to scan merchant QR codes.</string>
+```
+
+**On iOS 26 and later** your app must declare a scene manifest, which Flutter's
+template does not yet generate. Without it the app launches to a blank white
+screen and is terminated, with no Dart output to explain why. Add to
+`Info.plist`:
+
+```xml
+<key>UIApplicationSceneManifest</key>
+<dict>
+    <key>UIApplicationSupportsMultipleScenes</key><false/>
+    <key>UISceneConfigurations</key>
+    <dict>
+        <key>UIWindowSceneSessionRoleApplication</key>
+        <array>
+            <dict>
+                <key>UISceneClassName</key><string>UIWindowScene</string>
+                <key>UISceneDelegateClassName</key><string>FlutterSceneDelegate</string>
+                <key>UISceneConfigurationName</key><string>flutter</string>
+                <key>UISceneStoryboardFile</key><string>Main</string>
+            </dict>
+        </array>
+    </dict>
+</dict>
+```
+
+---
+
+## 3. Get an access token
+
+The SDK is authenticated with an OAuth2 token pair that **your backend**
+obtains. Do not ship the gateway credentials inside your app — anything
+compiled into an APK or IPA can be extracted.
+
+```
+GET {base-url}/eig/getToken?subscriberid=%2B254712345678
+user: <supplied by TerraPay>
+password: <supplied by TerraPay>
+```
+
+```json
+{
+  "status": "OK",
+  "subStatus": "Success",
+  "access_token": "eyJhbGciOi…",
+  "refresh_token": "eyJhbGciOi…",
+  "expiry": "300"
+}
+```
+
+Two details that commonly cause failures:
+
+- `subscriberid` is the **dial code plus MSISDN** (`+254712345678`), and the
+  leading `+` must be percent-encoded as `%2B`. Sent raw it arrives as a space
+  and the request fails.
+- `expiry` is returned as a **string** (`"300"`, seconds), not a number. Parsing
+  it as an integer without coercion throws.
+
+Refresh before expiry to keep long sessions working.
+
+---
+
+## 4. Launch the SDK
 
 ```dart
 import 'package:paybywallet_flutter/paybywallet_flutter.dart';
 
 final sdk = PayByWalletSdk.instance;
-
-sdk.events.listen((event) {
-  switch (event) {
-    case PinAuthenticateEvent(:final merchant):
-      // Authenticate the user yourself, then confirm with a unique order id.
-      sdk.processPayment('TXN123456789012');
-    case PaymentSuccessEvent(:final result):  print('paid: $result');
-    case PaymentFailureEvent(:final result):  print('failed: $result');
-    case SdkErrorEvent(:final code, :final message): print('$code $message');
-    case SdkCancelledEvent(): print('cancelled');
-    case SdkClosedEvent():    print('closed');   // iOS only
-  }
-});
 
 await sdk.launch(PayByWalletConfig(
   accessToken: token.accessToken,
@@ -109,67 +178,177 @@ await sdk.launch(PayByWalletConfig(
   subscriberDialCode: '+254',
   subscriberCountry: 'KE',
   subscriberCountryName: 'Kenya',
-  subscriberName: 'Giri Babu',
-  subscriberMsisdn: '476864812',
+  subscriberName: 'Jane Wanjiru',
+  subscriberMsisdn: '712345678',
   subscriberCurrency: 'KES',
   walletBalance: 9999654.50,
-  primaryColor: '52B44A',
+  primaryColor: '52B44A',     // your brand colour
   secondaryColor: 'FFFFFF',
 ));
 ```
 
+`launch()` validates the configuration natively and throws a
+`PlatformException` if it is rejected, so you can `await` it and show the error
+immediately rather than waiting for a callback.
+
+### Configuration reference
+
+| Parameter | Required | Rule |
+| --- | --- | --- |
+| `accessToken` | yes | from `getToken` |
+| `refreshToken` | yes | from `getToken` |
+| `subscriberDialCode` | yes | matches `^\+\d+$`, e.g. `+254` |
+| `subscriberMsisdn` | yes | digits only, no dial code; length validated per country |
+| `subscriberName` | yes | non-empty |
+| `subscriberCountry` | yes | ISO 3166-1 alpha-2, e.g. `KE` |
+| `subscriberCountryName` | yes | non-empty, e.g. `Kenya` |
+| `subscriberCurrency` | yes | ISO 4217, e.g. `KES` |
+| `walletBalance` | yes | number |
+| `primaryColor` | yes | 6-digit hex, no `#`, e.g. `52B44A` |
+| `secondaryColor` | yes | 6-digit hex, no `#`, e.g. `FFFFFF` |
+| `referenceNumber` | no | your own reference. **Android only** |
+| `environment` | no | `sandbox` (default) or `production`. **iOS only** — on Android the endpoint is fixed in the bundled SDK build |
+
+---
+
+## 5. Handle the result
+
+Subscribe before calling `launch()`. Events arrive as a typed stream:
+
+```dart
+late final StreamSubscription<PayByWalletEvent> _sub;
+
+@override
+void initState() {
+  super.initState();
+  _sub = sdk.events.listen((event) async {
+    switch (event) {
+      case PinAuthenticateEvent(:final merchant):
+        // The SDK has handed control back to you. Authenticate the user with
+        // your own PIN / biometric screen, then confirm the payment.
+        final ok = await showMyPinScreen(merchant);
+        if (ok) await sdk.processPayment(generateOrderId());
+
+      case PaymentSuccessEvent(:final result):
+        showReceipt(result);
+
+      case PaymentFailureEvent(:final result):
+        showFailure(result);
+
+      case SdkErrorEvent(:final code, :final message):
+        showError('$code: $message');
+
+      case SdkCancelledEvent():
+        // user backed out
+        break;
+
+      case SdkClosedEvent():
+        // iOS only: SDK UI dismissed with no terminal payment state
+        break;
+    }
+  });
+}
+
+@override
+void dispose() {
+  _sub.cancel();
+  super.dispose();
+}
+```
+
 ### The PIN step
 
-The SDK does not collect the PIN. On `PinAuthenticateEvent` it returns the
-merchant details and hands control back to your app, which authenticates the
-user however it likes and then calls `processPayment` with a **unique**
-alphanumeric order id.
+**The SDK never collects the user's PIN.** When the user confirms an amount it
+raises `PinAuthenticateEvent` with the merchant details and returns control to
+your app. You authenticate the user however your wallet normally does, then call:
 
-### Environments
+```dart
+await sdk.processPayment(orderId);
+```
 
-`PayByWalletConfig.environment` defaults to `sandbox` and is **iOS-only**. On
-Android the base URL is compiled into the bundled `.aar` (currently a UAT
-build), so switching to production there means swapping the `.aar`.
+`orderId` must be **unique per transaction** and alphanumeric, e.g.
+`TXN` followed by 12 digits. Reusing an id will cause the payment to be
+rejected.
 
-## Maintaining the bundled SDKs
+`MerchantDetails` gives you `merchantName`, `amount` and `currency` so you can
+show what is being paid on your own confirmation screen.
 
-* **Android** — `android/libs/payByWallet-release.aar`, exposed through a
-  `flatDir` repository because AGP rejects direct local `.aar` file
-  dependencies inside a library module. It carries no POM, so its transitive
-  dependencies are pinned by hand in `android/build.gradle`; re-derive them with
-  `jdeps -verbose:package` over the `.aar`'s `classes.jar` whenever it is
-  refreshed.
-* **`android/src/main/AndroidManifest.xml` merges a `NoActionBar` theme onto the
-  SDK's `PaymentsHomeActivity`.** The SDK declares that activity with an
-  `android:label` but no `android:theme`, so it falls back to the platform
-  default, which has an ActionBar — rendering a stray bar showing the SDK's
-  internal "PaymentsHome" label above the SDK's own header in every embedding
-  app. Remove the override only if the SDK starts theming its own activity.
-* **Do not swap ML Kit for the unbundled variant.** `barcode-scanning` bundles a
-  ~4.7 MB detection model and is the single biggest contributor to app size, so
-  `play-services-mlkit-barcode-scanning` looks like an easy ~6 MB saving. It is
-  not: that variant loads the detector from Play Services, and on a handset
-  without it the camera preview still runs while a framed QR is simply never
-  detected — a silent failure, logged only as *"No acceptable module
-  com.google.android.gms.vision.dynamite found"*. Verified broken on a Huawei
-  device (2026-09-23). Non-GMS handsets are core devices for this SDK.
-* **`android/consumer-rules.pro`** — the shipped `.aar` has no `proguard.txt`, so
-  these rules are what stop R8 from obfuscating the SDK in embedding apps' release
-  builds. Gson maps the SDK's DTOs by *field name* (none carry
-  `@SerializedName`), so the model keep-rule must retain members verbatim.
-* **iOS** — `ios/Frameworks/TerraPayWalletSDK.xcframework`, vendored by
-  `ios/paybywallet_flutter.podspec`. The `dSYMs/` directories are **stripped**:
-  Xcode discards them when packaging an app, so they cost ~13 MB in every clone
-  and change nothing in the build. If you need to symbolicate a crash inside the
-  SDK itself, take them from `SDK/iOS/build/TerraPayWalletSDK.xcframework`, and
-  strip them again after refreshing the xcframework:
+---
 
-  ```sh
-  rm -rf ios/Frameworks/TerraPayWalletSDK.xcframework/*/dSYMs
-  ```
+## 6. Error codes
 
-See `../paybywallet_sample` for a complete host app.
+`SdkErrorEvent.code`, and the `code` on a thrown `PlatformException`:
+
+| Code | Meaning |
+| --- | --- |
+| `INVALID_CONTEXT` | `MainActivity` does not extend `FlutterFragmentActivity` (see §2) |
+| `INVALID_DIAL_CODE` | `subscriberDialCode` is not `+` followed by digits |
+| `INVALID_MSISDN` | MSISDN empty, non-numeric, or wrong length for the country |
+| `INVALID_NAME` | `subscriberName` is empty |
+| `INVALID_COUNTRY_CODE` | not a valid ISO 3166-1 alpha-2 code |
+| `INVALID_COUNTRY_NAME` | `subscriberCountryName` is empty |
+| `INVALID_CURRENCY` | not a valid ISO 4217 code |
+| `INVALID_WALLET_BALANCE` | balance missing or not a number |
+| `INVALID_PRIMARY_COLOR` | not a 6-digit hex value |
+| `INVALID_SECONDARY_COLOR` | not a 6-digit hex value |
+| `INVALID_TRANSACTION_ID` | `processPayment` called with an empty order id |
+| `NETWORK_ERROR` | the device could not reach the gateway |
+| `SDK_CLOSED` | the SDK flow was closed before completing |
+
+---
+
+## 7. Troubleshooting
+
+| Symptom | Cause |
+| --- | --- |
+| `INVALID_CONTEXT` on first launch | `MainActivity` still extends `FlutterActivity`. See §2. |
+| `MissingPluginException … com.terrapay.paybywallet/sdk` | Full restart needed after adding the dependency — hot reload does not register plugins. |
+| App installs but shows a blank white screen on iOS 26+ | Missing `UIApplicationSceneManifest`. See §2. |
+| Camera preview is black, or the app crashes when scanning | `NSCameraUsageDescription` missing, or camera permission denied in system settings. |
+| Release build works but payments silently fail | Custom ProGuard rules are stripping the SDK. This package ships the required keep-rules; do not exclude them. |
+| `flutter pub get` fails with `Repository not found` | Git credentials not configured. See the appendix. |
+| Gradle fails with a bare version number | Wrong JDK. Build with JDK 17. |
+
+---
+
+## Appendix: private repository access
+
+Only applies while this repository is private. `flutter pub get` cannot prompt
+for credentials, so git must authenticate without interaction.
+
+**Developers** — store your token once:
+
+```sh
+git config --global credential.helper osxkeychain      # macOS
+git clone https://github.com/sdk-terrapay/paybywallet-flutter.git /tmp/auth-test
+# username: your GitHub username;  password: your access token
+rm -rf /tmp/auth-test
+```
+
+**CI** — inject the token without committing it anywhere:
+
+```sh
+git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "https://github.com/"
+```
+
+Never put the token in the `url:` in `pubspec.yaml` — that commits a live
+credential into your repository.
+
+---
+
+## Requirements summary
+
+| | |
+| --- | --- |
+| Flutter | 3.3.0+ |
+| Dart | 3.9+ |
+| Android | minSdk 28, compileSdk 36, JDK 17, `FlutterFragmentActivity` |
+| iOS | 15.0+, camera usage string, scene manifest on iOS 26+ |
+
+## Support
+
+sdk-support@terrapay.com
 
 ## License
 
-Proprietary — see [LICENSE](LICENSE).
+Proprietary. See [LICENSE](LICENSE).
