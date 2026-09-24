@@ -1,5 +1,4 @@
-/// Which TerraPay backend the SDK talks to. iOS-only: on Android the base URL
-/// is compiled into the .aar, so this value is ignored there.
+/// Which TerraPay backend the SDK talks to. Honoured on both platforms.
 enum PayByWalletEnvironment { sandbox, production }
 
 /// Configuration handed to the native TerraPay PayByWallet SDK on launch.
@@ -39,7 +38,7 @@ class PayByWalletConfig {
   /// Android-only optional reference passed through to `TerraPayClient.init`.
   final String? referenceNumber;
 
-  /// iOS-only; see [PayByWalletEnvironment].
+  /// See [PayByWalletEnvironment]. Defaults to sandbox.
   final PayByWalletEnvironment environment;
 
   Map<String, dynamic> toMap() => {

@@ -8,6 +8,7 @@ import com.terrapay.payByWallet.network.MerchantDetailsModel
 import com.terrapay.payByWallet.network.PaymentResponse
 import com.terrapay.payByWallet.network.TerraPayClient
 import com.terrapay.payByWallet.network.TerraPayConfig
+import com.terrapay.payByWallet.network.TerraPayEnvironment
 import com.terrapay.payByWallet.network.TerraPayResult
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -100,6 +101,15 @@ class PayByWalletPlugin :
             return
         }
 
+        val environment = when (val env = call.argument<String>("environment")) {
+            "production" -> TerraPayEnvironment.PRODUCTION
+            "sandbox", null -> TerraPayEnvironment.SANDBOX
+            else -> {
+                result.error("INVALID_ENVIRONMENT", "Unknown environment '$env'.", null)
+                return
+            }
+        }
+
         val config = TerraPayConfig(
             primaryColor = call.argument<String>("primaryColor").orEmpty(),
             secondaryColor = call.argument<String>("secondaryColor").orEmpty(),
@@ -112,6 +122,7 @@ class PayByWalletPlugin :
             subscriberName = call.argument<String>("subscriberName").orEmpty(),
             accessToken = call.argument<String>("accessToken").orEmpty(),
             refreshToken = call.argument<String>("refreshToken").orEmpty(),
+            environment = environment,
         )
 
         // Surface configuration problems as a failed call rather than as an

@@ -231,7 +231,7 @@ Requires `http: ^1.6.0` in your `pubspec.yaml`.
 Production requires separate credentials — your UAT `user` / `password` pair
 will not authenticate against it.
 
-**iOS** switches at runtime through the config:
+Both platforms switch at runtime through the config:
 
 ```dart
 PayByWalletConfig(
@@ -240,13 +240,8 @@ PayByWalletConfig(
 )
 ```
 
-**Android ignores this field.** The endpoint is compiled into the bundled native
-SDK, and the build shipped in this package targets **UAT**. Going live on
-Android therefore needs a production build of the package from TerraPay — it is
-not a code change on your side. An app that works against UAT on both platforms
-will still hit UAT on Android after you flip `environment` to `production`, with
-no error to indicate it. Request production credentials and a production build
-from sdk-support@terrapay.com before your go-live date.
+Request production credentials from sdk-support@terrapay.com before your
+go-live date.
 
 ## 🛠️ Usage
 
@@ -265,8 +260,7 @@ from sdk-support@terrapay.com before your go-live date.
 | `walletBalance` | Yes | Must not be null; numeric |
 | `primaryColor` | Yes | Valid 6-digit hex code (e.g. `EC1B24`) |
 | `secondaryColor` | Yes | Valid 6-digit hex code (e.g. `FFFFFF`) |
-| `referenceNumber` | No | Your own reference. **Android only** |
-| `environment` | No | `sandbox` (default) or `production`. **iOS only** |
+| `environment` | Yes | `sandbox` (default) or `production` |
 
 #### 1. Import the SDK
 
