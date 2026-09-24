@@ -285,6 +285,7 @@ await sdk.launch(PayByWalletConfig(
   walletBalance: 9999654.50,
   primaryColor: '52B44A',     // your brand colour
   secondaryColor: 'FFFFFF',
+  environment: PayByWalletEnvironment.sandbox,
 ));
 ```
 
