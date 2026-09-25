@@ -31,3 +31,6 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 /build/
 /coverage/
+
+# Native SDK debug symbols (not needed to build or run)
+ios/Frameworks/**/dSYMs/
