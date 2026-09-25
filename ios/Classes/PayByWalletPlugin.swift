@@ -158,9 +158,11 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
     _ status: TPPaymentStatus?,
     error: TPErrorInfo?
   ) -> [String: Any] {
-    [
-      "responseStatus": (status?.responseStatus ?? error?.code) as Any,
-      "responseMessage": (status?.responseMessage ?? error?.message) as Any,
+    let responseStatus: String? = status?.responseStatus ?? error?.code
+    let responseMessage: String? = status?.responseMessage ?? error?.message
+    return [
+      "responseStatus": responseStatus as Any,
+      "responseMessage": responseMessage as Any,
       "gatewayReferenceId": status?.gatewayReferenceId as Any,
       "orderId": status?.orderId as Any,
     ]
