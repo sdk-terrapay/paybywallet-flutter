@@ -5,10 +5,10 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import com.terrapay.payByWallet.network.MerchantDetailsModel
-import com.terrapay.payByWallet.network.PaymentResponse
 import com.terrapay.payByWallet.network.TerraPayClient
 import com.terrapay.payByWallet.network.TerraPayConfig
 import com.terrapay.payByWallet.network.TerraPayEnvironment
+import com.terrapay.payByWallet.network.TPPaymentStatus
 import com.terrapay.payByWallet.network.TerraPayResult
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -171,11 +171,11 @@ class PayByWalletPlugin :
             )
         }
 
-        override fun onPaymentSuccess(paymentResponse: PaymentResponse) =
-            send("onPaymentSuccess", paymentResponse.toMap())
+        override fun onPaymentSuccess(paymentStatus: TPPaymentStatus) =
+            send("onPaymentSuccess", paymentStatus.toMap())
 
-        override fun onPaymentFailure(paymentResponse: PaymentResponse) =
-            send("onPaymentFailure", paymentResponse.toMap())
+        override fun onPaymentFailure(paymentStatus: TPPaymentStatus) =
+            send("onPaymentFailure", paymentStatus.toMap())
 
         override fun onError(errorCode: String, message: String) =
             send("onError", mapOf("code" to errorCode, "message" to message))
@@ -184,8 +184,8 @@ class PayByWalletPlugin :
             send("onCancelled", mapOf("code" to errorCode, "message" to message))
     }
 
-    private fun PaymentResponse.toMap(): Map<String, Any?> = mapOf(
-        "responseCode" to responseCode,
+    private fun TPPaymentStatus.toMap(): Map<String, Any?> = mapOf(
+        "responseStatus" to responseStatus,
         "responseMessage" to responseMessage,
         "gatewayReferenceId" to gatewayReferenceId,
         "orderId" to orderId,

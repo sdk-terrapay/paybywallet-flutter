@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'paybywallet_flutter'
-  s.version          = '1.0.1'
+  s.version          = '1.0.0'
   s.summary          = 'Flutter bindings for the TerraPay PayByWallet SDK.'
   s.description      = <<-DESC
 Merchant payments by QR code or merchant ID, backed by the native

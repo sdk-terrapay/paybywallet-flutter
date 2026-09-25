@@ -132,13 +132,9 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
         "subscriberCurrency": merchant?.subscriberCurrency as Any,
       ])
     case .onPaymentSuccess:
-      send("onPaymentSuccess", ["raw": status?.description as Any])
+      send("onPaymentSuccess", Self.paymentStatusMap(status, error: error))
     case .onPaymentFailure:
-      send("onPaymentFailure", [
-        "raw": status?.description as Any,
-        "responseCode": error?.code as Any,
-        "responseMessage": error?.message as Any,
-      ])
+      send("onPaymentFailure", Self.paymentStatusMap(status, error: error))
     case .onError:
       send("onError", [
         "code": error?.code ?? "",
@@ -154,6 +150,20 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
     @unknown default:
       send("onError", ["code": "", "message": "Unrecognised SDK result."])
     }
+  }
+
+  /// Same keys as the Android bridge's `TPPaymentStatus.toMap()`. Falls back to
+  /// the error info when the SDK reports a failure without a status.
+  private static func paymentStatusMap(
+    _ status: TPPaymentStatus?,
+    error: TPErrorInfo?
+  ) -> [String: Any] {
+    [
+      "responseStatus": (status?.responseStatus ?? error?.code) as Any,
+      "responseMessage": (status?.responseMessage ?? error?.message) as Any,
+      "gatewayReferenceId": status?.gatewayReferenceId as Any,
+      "orderId": status?.orderId as Any,
+    ]
   }
 
   private func send(_ method: String, _ arguments: [String: Any]) {

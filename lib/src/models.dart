@@ -76,38 +76,33 @@ class MerchantDetails {
   String toString() => '$merchantName - $currency $amount';
 }
 
-/// Outcome of a completed payment attempt.
+/// Outcome of a completed payment attempt, mirroring the native SDKs'
+/// `TPPaymentStatus` (same fields on both platforms).
 class PaymentResult {
   const PaymentResult({
-    this.responseCode,
+    this.responseStatus,
     this.responseMessage,
     this.gatewayReferenceId,
     this.orderId,
-    this.raw,
   });
 
-  final String? responseCode;
+  final String? responseStatus;
   final String? responseMessage;
   final String? gatewayReferenceId;
   final String? orderId;
 
-  /// iOS returns a single opaque description string rather than fields.
-  final String? raw;
-
   factory PaymentResult.fromMap(Map<dynamic, dynamic> map) => PaymentResult(
-        responseCode: map['responseCode'] as String?,
+        responseStatus: map['responseStatus'] as String?,
         responseMessage: map['responseMessage'] as String?,
         gatewayReferenceId: map['gatewayReferenceId'] as String?,
         orderId: map['orderId'] as String?,
-        raw: map['raw'] as String?,
       );
 
   @override
   String toString() {
-    if (raw != null && raw!.isNotEmpty) return raw!;
     return [
       if (responseMessage != null) responseMessage,
-      if (responseCode != null) 'code: $responseCode',
+      if (responseStatus != null) 'status: $responseStatus',
       if (orderId != null) 'order: $orderId',
       if (gatewayReferenceId != null) 'ref: $gatewayReferenceId',
     ].whereType<String>().join(' • ');

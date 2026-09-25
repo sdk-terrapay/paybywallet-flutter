@@ -158,16 +158,6 @@
       },
       {
         "kind": "Import",
-        "name": "UIKit",
-        "printedName": "UIKit",
-        "declKind": "Import",
-        "moduleName": "TerraPayWalletSDK",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
         "name": "Foundation",
         "printedName": "Foundation",
         "declKind": "Import",
@@ -181,6 +171,349 @@
         "name": "TPPaymentStatus",
         "printedName": "TPPaymentStatus",
         "children": [
+          {
+            "kind": "Var",
+            "name": "responseStatus",
+            "printedName": "responseStatus",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus(py)responseStatus",
+            "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusC08responseF0SSSgvp",
+            "moduleName": "TerraPayWalletSDK",
+            "declAttributes": [
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "ObjC"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus(im)responseStatus",
+                "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusC08responseF0SSSgvg",
+                "moduleName": "TerraPayWalletSDK",
+                "implicit": true,
+                "declAttributes": [
+                  "Final",
+                  "ObjC"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "responseMessage",
+            "printedName": "responseMessage",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus(py)responseMessage",
+            "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusC15responseMessageSSSgvp",
+            "moduleName": "TerraPayWalletSDK",
+            "declAttributes": [
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "ObjC"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus(im)responseMessage",
+                "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusC15responseMessageSSSgvg",
+                "moduleName": "TerraPayWalletSDK",
+                "implicit": true,
+                "declAttributes": [
+                  "Final",
+                  "ObjC"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "gatewayReferenceId",
+            "printedName": "gatewayReferenceId",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus(py)gatewayReferenceId",
+            "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusC18gatewayReferenceIdSSSgvp",
+            "moduleName": "TerraPayWalletSDK",
+            "declAttributes": [
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "ObjC"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus(im)gatewayReferenceId",
+                "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusC18gatewayReferenceIdSSSgvg",
+                "moduleName": "TerraPayWalletSDK",
+                "implicit": true,
+                "declAttributes": [
+                  "Final",
+                  "ObjC"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "orderId",
+            "printedName": "orderId",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus(py)orderId",
+            "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusC7orderIdSSSgvp",
+            "moduleName": "TerraPayWalletSDK",
+            "declAttributes": [
+              "Final",
+              "HasStorage",
+              "AccessControl",
+              "ObjC"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus(im)orderId",
+                "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusC7orderIdSSSgvg",
+                "moduleName": "TerraPayWalletSDK",
+                "implicit": true,
+                "declAttributes": [
+                  "Final",
+                  "ObjC"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(responseStatus:responseMessage:gatewayReferenceId:orderId:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "TPPaymentStatus",
+                "printedName": "TerraPayWalletSDK.TPPaymentStatus",
+                "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus(im)initWithResponseStatus:responseMessage:gatewayReferenceId:orderId:",
+            "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusC08responseF00G7Message18gatewayReferenceId05orderK0ACSSSg_A3Htcfc",
+            "moduleName": "TerraPayWalletSDK",
+            "objc_name": "initWithResponseStatus:responseMessage:gatewayReferenceId:orderId:",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "init_kind": "Designated"
+          },
           {
             "kind": "Var",
             "name": "description",
@@ -231,6 +564,32 @@
                 "accessorKind": "get"
               }
             ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "TPPaymentStatus",
+                "printedName": "TerraPayWalletSDK.TPPaymentStatus",
+                "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus(im)init",
+            "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusCACycfc",
+            "moduleName": "TerraPayWalletSDK",
+            "overriding": true,
+            "implicit": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
+            "init_kind": "Designated"
           },
           {
             "kind": "Constructor",
@@ -290,6 +649,178 @@
         "declKind": "Class",
         "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatus",
         "mangledName": "$s17TerraPayWalletSDK15TPPaymentStatusC",
+        "moduleName": "TerraPayWalletSDK",
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Decodable",
+            "printedName": "Decodable",
+            "usr": "s:Se",
+            "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Encodable",
+            "printedName": "Encodable",
+            "usr": "s:SE",
+            "mangledName": "$sSE"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "UIKit",
+        "printedName": "UIKit",
+        "declKind": "Import",
+        "moduleName": "TerraPayWalletSDK",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "TerraPayWalletSDK",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "TPPaymentStatusRespModel",
+        "printedName": "TPPaymentStatusRespModel",
+        "children": [
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(from:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "TPPaymentStatusRespModel",
+                "printedName": "TerraPayWalletSDK.TPPaymentStatusRespModel",
+                "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatusRespModel"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Decoder",
+                "printedName": "any Swift.Decoder",
+                "usr": "s:s7DecoderP"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:17TerraPayWalletSDK24TPPaymentStatusRespModelC4fromACs7Decoder_p_tKcfc",
+            "mangledName": "$s17TerraPayWalletSDK24TPPaymentStatusRespModelC4fromACs7Decoder_p_tKcfc",
+            "moduleName": "TerraPayWalletSDK",
+            "implicit": true,
+            "declAttributes": [
+              "Required"
+            ],
+            "throwing": true,
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "encode",
+            "printedName": "encode(to:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Encoder",
+                "printedName": "any Swift.Encoder",
+                "usr": "s:s7EncoderP"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:17TerraPayWalletSDK24TPPaymentStatusRespModelC6encode2toys7Encoder_p_tKF",
+            "mangledName": "$s17TerraPayWalletSDK24TPPaymentStatusRespModelC6encode2toys7Encoder_p_tKF",
+            "moduleName": "TerraPayWalletSDK",
+            "implicit": true,
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@TerraPayWalletSDK@objc(cs)TPPaymentStatusRespModel",
+        "mangledName": "$s17TerraPayWalletSDK24TPPaymentStatusRespModelC",
         "moduleName": "TerraPayWalletSDK",
         "declAttributes": [
           "AccessControl",
@@ -3411,259 +3942,259 @@
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 462,
+      "offset": 471,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 531,
+      "offset": 540,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 701,
+      "offset": 710,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 888,
+      "offset": 897,
       "length": 4,
       "value": "10.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 947,
+      "offset": 956,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 1139,
+      "offset": 1148,
       "length": 3,
       "value": "8.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 1288,
+      "offset": 1297,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 1521,
+      "offset": 1530,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 1727,
+      "offset": 1736,
       "length": 4,
       "value": "16.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 1791,
+      "offset": 1800,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 1997,
+      "offset": 2006,
       "length": 4,
       "value": "14.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 2061,
+      "offset": 2070,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 2247,
+      "offset": 2256,
       "length": 4,
       "value": "10.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 2306,
+      "offset": 2315,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 2487,
+      "offset": 2496,
       "length": 4,
       "value": "10.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 2546,
+      "offset": 2555,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 2702,
+      "offset": 2711,
       "length": 4,
       "value": "14.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 3953,
+      "offset": 3962,
       "length": 1,
       "value": "8"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 4053,
+      "offset": 4062,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 4251,
+      "offset": 4260,
       "length": 1,
       "value": "8"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 4351,
+      "offset": 4360,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "StringLiteral",
-      "offset": 4490,
+      "offset": 4499,
       "length": 14,
       "value": "\"shareReceipt\""
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "StringLiteral",
-      "offset": 4577,
+      "offset": 4586,
       "length": 13,
       "value": "\"sharewithBG\""
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 4693,
+      "offset": 4702,
       "length": 1,
       "value": "3"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 4702,
+      "offset": 4711,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 4713,
+      "offset": 4722,
       "length": 1,
       "value": "3"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "IntegerLiteral",
-      "offset": 4723,
+      "offset": 4732,
       "length": 2,
       "value": "12"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 4855,
+      "offset": 4864,
       "length": 4,
       "value": "17.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 4920,
+      "offset": 4929,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "StringLiteral",
-      "offset": 5055,
+      "offset": 5064,
       "length": 6,
       "value": "\"Done\""
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 5252,
+      "offset": 5261,
       "length": 4,
       "value": "17.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 5317,
+      "offset": 5326,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 5359,
+      "offset": 5368,
       "length": 4,
       "value": "25.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "FloatLiteral",
-      "offset": 5545,
+      "offset": 5554,
       "length": 4,
       "value": "20.0"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 5694,
+      "offset": 5703,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "StringLiteral",
-      "offset": 5876,
+      "offset": 5885,
       "length": 11,
       "value": "\"poweredby\""
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPaymentStatusViewController.swift",
       "kind": "BooleanLiteral",
-      "offset": 5954,
+      "offset": 5963,
       "length": 5,
       "value": "false"
     },
@@ -3948,6 +4479,41 @@
       "value": "3.0"
     },
     {
+      "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Models\/TPPaymentStaus.swift",
+      "kind": "StringLiteral",
+      "offset": 752,
+      "length": 140,
+      "value": "\"(responseCode: \""
+    },
+    {
+      "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Models\/TPPaymentStaus.swift",
+      "kind": "StringLiteral",
+      "offset": 786,
+      "length": 1,
+      "value": "\", responseMessage: \""
+    },
+    {
+      "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Models\/TPPaymentStaus.swift",
+      "kind": "StringLiteral",
+      "offset": 824,
+      "length": 1,
+      "value": "\", gatewayReferenceId: \""
+    },
+    {
+      "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Models\/TPPaymentStaus.swift",
+      "kind": "StringLiteral",
+      "offset": 868,
+      "length": 1,
+      "value": "\", orderId: \""
+    },
+    {
+      "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Models\/TPPaymentStaus.swift",
+      "kind": "StringLiteral",
+      "offset": 890,
+      "length": 1,
+      "value": "\")\""
+    },
+    {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPBottomsheetViewController.swift",
       "kind": "FloatLiteral",
       "offset": 1235,
@@ -4044,41 +4610,6 @@
       "offset": 2780,
       "length": 5,
       "value": "false"
-    },
-    {
-      "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Models\/TPPaymentStatus.swift",
-      "kind": "StringLiteral",
-      "offset": 966,
-      "length": 138,
-      "value": "\"(responseCode: \""
-    },
-    {
-      "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Models\/TPPaymentStatus.swift",
-      "kind": "StringLiteral",
-      "offset": 999,
-      "length": 1,
-      "value": "\", responseMessage: \""
-    },
-    {
-      "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Models\/TPPaymentStatus.swift",
-      "kind": "StringLiteral",
-      "offset": 1038,
-      "length": 1,
-      "value": "\", gatewayReferenceId: \""
-    },
-    {
-      "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Models\/TPPaymentStatus.swift",
-      "kind": "StringLiteral",
-      "offset": 1080,
-      "length": 1,
-      "value": "\", orderId: \""
-    },
-    {
-      "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Models\/TPPaymentStatus.swift",
-      "kind": "StringLiteral",
-      "offset": 1102,
-      "length": 1,
-      "value": "\")\""
     },
     {
       "filePath": "\/Users\/giribabu\/Library\/CloudStorage\/OneDrive-TerraPay\/Giri\/Projects\/Payments\/PayByWallet\/SDK\/iOS\/TerraPayWalletSDK\/Controllers\/TPPayMerchantViewController.swift",

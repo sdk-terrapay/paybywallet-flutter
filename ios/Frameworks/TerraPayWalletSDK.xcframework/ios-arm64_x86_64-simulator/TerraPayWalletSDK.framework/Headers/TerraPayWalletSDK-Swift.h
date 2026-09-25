@@ -406,7 +406,18 @@ SWIFT_CLASS("_TtC17TerraPayWalletSDK10TPMerchant")
 
 SWIFT_CLASS("_TtC17TerraPayWalletSDK15TPPaymentStatus")
 @interface TPPaymentStatus : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nullable responseStatus;
+@property (nonatomic, readonly, copy) NSString * _Nullable responseMessage;
+@property (nonatomic, readonly, copy) NSString * _Nullable gatewayReferenceId;
+@property (nonatomic, readonly, copy) NSString * _Nullable orderId;
+- (nonnull instancetype)initWithResponseStatus:(NSString * _Nullable)responseStatus responseMessage:(NSString * _Nullable)responseMessage gatewayReferenceId:(NSString * _Nullable)gatewayReferenceId orderId:(NSString * _Nullable)orderId OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+SWIFT_CLASS("_TtC17TerraPayWalletSDK24TPPaymentStatusRespModel")
+@interface TPPaymentStatusRespModel : NSObject
 @end
 
 @class TerraPayWalletSDKConfig;
@@ -858,7 +869,18 @@ SWIFT_CLASS("_TtC17TerraPayWalletSDK10TPMerchant")
 
 SWIFT_CLASS("_TtC17TerraPayWalletSDK15TPPaymentStatus")
 @interface TPPaymentStatus : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nullable responseStatus;
+@property (nonatomic, readonly, copy) NSString * _Nullable responseMessage;
+@property (nonatomic, readonly, copy) NSString * _Nullable gatewayReferenceId;
+@property (nonatomic, readonly, copy) NSString * _Nullable orderId;
+- (nonnull instancetype)initWithResponseStatus:(NSString * _Nullable)responseStatus responseMessage:(NSString * _Nullable)responseMessage gatewayReferenceId:(NSString * _Nullable)gatewayReferenceId orderId:(NSString * _Nullable)orderId OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+SWIFT_CLASS("_TtC17TerraPayWalletSDK24TPPaymentStatusRespModel")
+@interface TPPaymentStatusRespModel : NSObject
 @end
 
 @class TerraPayWalletSDKConfig;

@@ -19,9 +19,19 @@ import _SwiftConcurrencyShims
 import os.log
 import os
 @objc public class TPPaymentStatus : ObjectiveC::NSObject, Swift::Codable {
+  @objc final public let responseStatus: Swift::String?
+  @objc final public let responseMessage: Swift::String?
+  @objc final public let gatewayReferenceId: Swift::String?
+  @objc final public let orderId: Swift::String?
+  @objc public init(responseStatus: Swift::String?, responseMessage: Swift::String?, gatewayReferenceId: Swift::String?, orderId: Swift::String?)
   @objc override dynamic public var description: Swift::String {
     @objc get
   }
+  @objc deinit
+  public func encode(to encoder: any Swift::Encoder) throws
+  required public init(from decoder: any Swift::Decoder) throws
+}
+@objc public class TPPaymentStatusRespModel : ObjectiveC::NSObject, Swift::Codable {
   @objc deinit
   public func encode(to encoder: any Swift::Encoder) throws
   required public init(from decoder: any Swift::Decoder) throws
