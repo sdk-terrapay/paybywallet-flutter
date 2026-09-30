@@ -1,9 +1,12 @@
 package com.terrapay.paybywallet_flutter
 
 import android.app.Activity
+import android.app.Application
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
+import com.terrapay.payByWallet.PaymentsHomeActivity
 import com.terrapay.payByWallet.network.MerchantDetailsModel
 import com.terrapay.payByWallet.network.TerraPayClient
 import com.terrapay.payByWallet.network.TerraPayConfig
@@ -31,7 +34,16 @@ class PayByWalletPlugin :
 
     private lateinit var channel: MethodChannel
     private var activity: Activity? = null
+    private var application: Application? = null
     private val main = Handler(Looper.getMainLooper())
+
+    /**
+     * True while the SDK's screen is showing and has not yet reported back.
+     * Some SDK exits (e.g. system back on the QR scanner) finish the activity
+     * without any [TerraPayResult] callback; [sdkActivityWatcher] turns those
+     * into `onClosed` so Dart is never left waiting.
+     */
+    private var awaitingResult = false
 
     // ---- Lifecycle ----------------------------------------------------------
 
@@ -45,19 +57,47 @@ class PayByWalletPlugin :
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        activity = binding.activity
+        attach(binding.activity)
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        activity = binding.activity
+        attach(binding.activity)
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-        activity = null
+        detach()
     }
 
     override fun onDetachedFromActivity() {
+        detach()
+    }
+
+    private fun attach(host: Activity) {
+        activity = host
+        application = host.application.also {
+            it.registerActivityLifecycleCallbacks(sdkActivityWatcher)
+        }
+    }
+
+    private fun detach() {
+        application?.unregisterActivityLifecycleCallbacks(sdkActivityWatcher)
+        application = null
         activity = null
+    }
+
+    private val sdkActivityWatcher = object : Application.ActivityLifecycleCallbacks {
+        override fun onActivityDestroyed(destroyed: Activity) {
+            if (destroyed is PaymentsHomeActivity && destroyed.isFinishing && awaitingResult) {
+                send("onClosed", emptyMap())
+            }
+        }
+
+        override fun onActivityCreated(created: Activity, savedInstanceState: Bundle?) {}
+        override fun onActivityStarted(started: Activity) {}
+        override fun onActivityResumed(resumed: Activity) {}
+        override fun onActivityPaused(paused: Activity) {}
+        override fun onActivityStopped(stopped: Activity) {}
+        override fun onActivitySaveInstanceState(saved: Activity, outState: Bundle) {}
     }
 
     // ---- Dart -> native -----------------------------------------------------
@@ -138,6 +178,7 @@ class PayByWalletPlugin :
             referenceNumber = call.argument<String>("referenceNumber"),
             terraPayResult = callbacks,
         )
+        awaitingResult = true
         result.success(null)
     }
 
@@ -149,12 +190,16 @@ class PayByWalletPlugin :
             return
         }
         TerraPayClient.processPayment(context = activity, transactionId = transactionId)
+        awaitingResult = true
         result.success(null)
     }
 
     // ---- Native -> Dart -----------------------------------------------------
 
     private fun send(method: String, args: Map<String, Any?>) {
+        // Any callback ends the wait; the SDK invokes them on the main thread
+        // before finishing its activity, so this is set before the destroy check.
+        awaitingResult = false
         main.post { channel.invokeMethod(method, args) }
     }
 

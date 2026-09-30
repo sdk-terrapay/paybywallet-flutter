@@ -12,6 +12,18 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
 
   private let channel: FlutterMethodChannel
 
+  // MARK: - Silent-dismissal watch
+  //
+  // Some SDK exits (e.g. the back arrow on the QR scanner) dismiss its screens
+  // without calling the completion handler. While a result is pending we watch
+  // the presenting controller and report `onClosed` once the SDK's screen is
+  // gone and no callback followed, so Dart is never left waiting.
+
+  private var awaitingResult = false
+  private var sawSdkScreen = false
+  private weak var sdkPresenter: UIViewController?
+  private var dismissalWatch: Timer?
+
   private init(channel: FlutterMethodChannel) {
     self.channel = channel
     super.init()
@@ -94,6 +106,7 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
       environment: environment
     )
 
+    watchForSilentDismissal(from: controller)
     TerraPayWalletClient.shared.launch(with: config) { [weak self] type, error, merchant, status in
       self?.forward(type: type, error: error, merchant: merchant, status: status)
     }
@@ -109,11 +122,49 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
       result(Self.error("INVALID_TRANSACTION_ID", "transactionId is required."))
       return
     }
+    let controller = hostController
+    watchForSilentDismissal(from: controller)
     TerraPayWalletClient.shared.processPayment(
-      controller: hostController,
+      controller: controller,
       transactionId: transactionId
     )
     result(nil)
+  }
+
+  private func watchForSilentDismissal(from presenter: UIViewController?) {
+    stopWatching()
+    awaitingResult = true
+    sawSdkScreen = false
+    sdkPresenter = presenter
+    // The SDK presents asynchronously, so poll rather than check once.
+    dismissalWatch = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
+      self?.checkForSilentDismissal()
+    }
+  }
+
+  private func checkForSilentDismissal() {
+    guard awaitingResult, let presenter = sdkPresenter else {
+      stopWatching()
+      return
+    }
+    if presenter.presentedViewController != nil {
+      sawSdkScreen = true
+      return
+    }
+    guard sawSdkScreen else { return }
+
+    // The SDK's own exit callbacks fire from the dismissal's completion block,
+    // so give them a moment before deciding none is coming.
+    stopWatching()
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+      guard let self, self.awaitingResult else { return }
+      self.send("onClosed", [:])
+    }
+  }
+
+  private func stopWatching() {
+    dismissalWatch?.invalidate()
+    dismissalWatch = nil
   }
 
   // MARK: - Native -> Dart
@@ -169,6 +220,9 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
   }
 
   private func send(_ method: String, _ arguments: [String: Any]) {
+    // Any callback ends the wait for this launch / processPayment.
+    awaitingResult = false
+    stopWatching()
     // Strip NSNull so optional fields arrive as Dart nulls.
     let cleaned = arguments.filter { !($0.value is NSNull) }
     DispatchQueue.main.async { [weak self] in
