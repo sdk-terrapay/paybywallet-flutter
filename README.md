@@ -99,9 +99,11 @@ review without it:
 <string>This will allow <your-app-name> to scan QR Code.</string>
 ```
 
-**On iOS 26 and later** the app must also declare a scene manifest, which
-Flutter's template does not yet generate. Without it the app launches to a blank
-white screen and is terminated, with no Dart output to explain why:
+**When building with Xcode 27 (iOS 27 SDK) or later** the app must also declare
+a scene manifest, which Flutter's template does not yet generate. Without it the
+app launches to a blank white screen and is terminated, with no Dart output to
+explain why. The requirement follows the SDK the app is built with, not the iOS
+version of the device, and the manifest is safe to add for older SDKs too:
 
 ```xml
 <key>UIApplicationSceneManifest</key>
