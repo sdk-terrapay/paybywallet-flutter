@@ -260,9 +260,9 @@ go-live date.
 | `subscriberCountryName` | Yes | Must not be empty |
 | `subscriberCurrency` | Yes | Valid ISO 4217 currency code |
 | `walletBalance` | Yes | Must not be null; numeric |
-| `primaryColor` | Yes | Valid 6-digit hex code (e.g. `EC1B24`) |
-| `secondaryColor` | Yes | Valid 6-digit hex code (e.g. `FFFFFF`) |
-| `environment` | Yes | `sandbox` (default) or `production` |
+| `primaryColor` | Yes | Valid 6-digit hex code, no `#` (e.g. `EC1B24`) |
+| `secondaryColor` | Yes | Valid 6-digit hex code, no `#` (e.g. `FFFFFF`) |
+| `environment` | No | `sandbox` (default) or `production` |
 
 #### 1. Import the SDK
 
