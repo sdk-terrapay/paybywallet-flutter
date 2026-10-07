@@ -15,7 +15,6 @@ class PayByWalletConfig {
     required this.walletBalance,
     required this.primaryColor,
     required this.secondaryColor,
-    this.referenceNumber,
     this.environment = PayByWalletEnvironment.sandbox,
   });
 
@@ -35,9 +34,6 @@ class PayByWalletConfig {
   /// 6-digit hex, no leading '#', e.g. `FFFFFF`.
   final String secondaryColor;
 
-  /// Android-only optional reference passed through to `TerraPayClient.init`.
-  final String? referenceNumber;
-
   /// See [PayByWalletEnvironment]. Defaults to sandbox.
   final PayByWalletEnvironment environment;
 
@@ -53,7 +49,6 @@ class PayByWalletConfig {
         'walletBalance': walletBalance,
         'primaryColor': primaryColor,
         'secondaryColor': secondaryColor,
-        'referenceNumber': referenceNumber,
         'environment': environment.name,
       };
 }

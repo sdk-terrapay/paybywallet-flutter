@@ -175,7 +175,6 @@ class PayByWalletPlugin :
         TerraPayClient.init(
             context = activity,
             config = config,
-            referenceNumber = call.argument<String>("referenceNumber"),
             terraPayResult = callbacks,
         )
         awaitingResult = true
