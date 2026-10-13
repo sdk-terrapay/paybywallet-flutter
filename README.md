@@ -363,6 +363,38 @@ await sdk.processPayment(orderId);
 `MerchantDetails` provides `merchantName`, `amount` and `currency` so you can
 show what is being paid on your own confirmation screen.
 
+#### 5. Read the payment result
+
+`PaymentSuccessEvent` and `PaymentFailureEvent` both carry a `PaymentResult`,
+with the same fields on Android and iOS:
+
+```dart
+const PaymentResult({
+  this.responseStatus,
+  this.responseMessage,
+  this.gatewayReferenceId,
+  this.orderId,
+});
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `responseStatus` | `String?` | Status of the transaction returned by the gateway |
+| `responseMessage` | `String?` | Human-readable message describing the outcome |
+| `gatewayReferenceId` | `String?` | TerraPay gateway reference for the transaction; quote it to support |
+| `orderId` | `String?` | The order id you passed to `processPayment` |
+
+Every field is nullable, so check for `null` before displaying or storing a
+value:
+
+```dart
+case PaymentSuccessEvent(:final result):
+  print('Order ${result.orderId} paid, ref ${result.gatewayReferenceId}');
+
+case PaymentFailureEvent(:final result):
+  print('Payment failed: ${result.responseMessage ?? 'unknown error'}');
+```
+
 ## ⚠️ Error codes
 
 `SdkErrorEvent.code`, and the `code` on a thrown `PlatformException`:
