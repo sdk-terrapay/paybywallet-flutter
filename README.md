@@ -259,10 +259,14 @@ go-live date.
 | `subscriberCountry` | Yes | Valid ISO 3166-1 alpha-2 country code |
 | `subscriberCountryName` | Yes | Must not be empty |
 | `subscriberCurrency` | Yes | Valid ISO 4217 currency code |
-| `walletBalance` | Yes | Must not be null; numeric |
 | `primaryColor` | Yes | Valid 6-digit hex code, no `#` (e.g. `EC1B24`) |
 | `secondaryColor` | Yes | Valid 6-digit hex code, no `#` (e.g. `FFFFFF`) |
 | `environment` | No | `sandbox` (default) or `production` |
+| `walletBalance` | No | Numeric; omit to leave the balance unset |
+| `merchantCountry` | No | Merchant's country selected by the user in the Mixx app; ISO 3166-1 alpha-2 (e.g. `KE`) |
+| `merchantAcquirer` | No | PSP ID of the merchant's provider selected by the user in the Mixx app (e.g. `'25403'`) |
+| `transactionMinLimit` | No | Numeric; minimum amount allowed per transaction, in Merchant's Currency |
+| `transactionMaxLimit` | No | Numeric; maximum amount allowed per transaction, in Merchant's Currency |
 
 #### 1. Import the SDK
 
@@ -284,10 +288,15 @@ await sdk.launch(PayByWalletConfig(
   subscriberName: 'Jane Wanjiru',
   subscriberMsisdn: '712345678',
   subscriberCurrency: 'KES',
-  walletBalance: 9999654.50,
-  primaryColor: '52B44A',     // your brand colour
+  primaryColor: '52B44A',
   secondaryColor: 'FFFFFF',
+  // Optional
   environment: PayByWalletEnvironment.sandbox,
+  walletBalance: 9999654.50,
+  merchantCountry: 'KE',
+  merchantAcquirer: '25403',
+  transactionMinLimit: 1000.00,
+  transactionMaxLimit: 5000000.00,
 ));
 ```
 
