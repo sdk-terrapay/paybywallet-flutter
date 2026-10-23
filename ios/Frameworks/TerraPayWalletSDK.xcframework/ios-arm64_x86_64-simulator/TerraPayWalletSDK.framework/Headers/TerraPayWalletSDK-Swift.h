@@ -410,7 +410,13 @@ SWIFT_CLASS("_TtC17TerraPayWalletSDK15TPPaymentStatus")
 @property (nonatomic, readonly, copy) NSString * _Nullable responseMessage;
 @property (nonatomic, readonly, copy) NSString * _Nullable gatewayReferenceId;
 @property (nonatomic, readonly, copy) NSString * _Nullable orderId;
-- (nonnull instancetype)initWithResponseStatus:(NSString * _Nullable)responseStatus responseMessage:(NSString * _Nullable)responseMessage gatewayReferenceId:(NSString * _Nullable)gatewayReferenceId orderId:(NSString * _Nullable)orderId OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantId;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantName;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantAmount;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantCurrency;
+@property (nonatomic, readonly, copy) NSString * _Nullable subscriberAmount;
+@property (nonatomic, readonly, copy) NSString * _Nullable subscriberCurrency;
+- (nonnull instancetype)initWithResponseStatus:(NSString * _Nullable)responseStatus responseMessage:(NSString * _Nullable)responseMessage gatewayReferenceId:(NSString * _Nullable)gatewayReferenceId orderId:(NSString * _Nullable)orderId merchantId:(NSString * _Nullable)merchantId merchantName:(NSString * _Nullable)merchantName merchantAmount:(NSString * _Nullable)merchantAmount merchantCurrency:(NSString * _Nullable)merchantCurrency subscriberAmount:(NSString * _Nullable)subscriberAmount subscriberCurrency:(NSString * _Nullable)subscriberCurrency OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -444,11 +450,10 @@ SWIFT_CLASS("_TtC17TerraPayWalletSDK23TerraPayWalletSDKConfig")
 @property (nonatomic, readonly, copy) NSString * _Nonnull subscriberName;
 @property (nonatomic, readonly, copy) NSString * _Nonnull subscriberMSISDN;
 @property (nonatomic, readonly, copy) NSString * _Nonnull subscriberCurrency;
-@property (nonatomic, readonly, copy) NSString * _Nullable walletBalance;
 @property (nonatomic, readonly, copy) NSString * _Nonnull primaryColor;
 @property (nonatomic, readonly, copy) NSString * _Nonnull secondaryColor;
-@property (nonatomic, readonly) enum TPEnvironment environment;
-- (nonnull instancetype)initWithController:(UIViewController * _Nonnull)controller accessToken:(NSString * _Nonnull)accessToken refreshToken:(NSString * _Nonnull)refreshToken subscriberDialCode:(NSString * _Nonnull)subscriberDialCode subscriberCountry:(NSString * _Nonnull)subscriberCountry subscriberCountryName:(NSString * _Nonnull)subscriberCountryName subscriberName:(NSString * _Nonnull)subscriberName subscriberMSISDN:(NSString * _Nonnull)subscriberMSISDN subscriberCurrency:(NSString * _Nonnull)subscriberCurrency walletBalance:(NSString * _Nullable)walletBalance primaryColor:(NSString * _Nonnull)primaryColor secondaryColor:(NSString * _Nonnull)secondaryColor environment:(enum TPEnvironment)environment OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantCountry;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantAcquirer;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -873,7 +878,13 @@ SWIFT_CLASS("_TtC17TerraPayWalletSDK15TPPaymentStatus")
 @property (nonatomic, readonly, copy) NSString * _Nullable responseMessage;
 @property (nonatomic, readonly, copy) NSString * _Nullable gatewayReferenceId;
 @property (nonatomic, readonly, copy) NSString * _Nullable orderId;
-- (nonnull instancetype)initWithResponseStatus:(NSString * _Nullable)responseStatus responseMessage:(NSString * _Nullable)responseMessage gatewayReferenceId:(NSString * _Nullable)gatewayReferenceId orderId:(NSString * _Nullable)orderId OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantId;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantName;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantAmount;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantCurrency;
+@property (nonatomic, readonly, copy) NSString * _Nullable subscriberAmount;
+@property (nonatomic, readonly, copy) NSString * _Nullable subscriberCurrency;
+- (nonnull instancetype)initWithResponseStatus:(NSString * _Nullable)responseStatus responseMessage:(NSString * _Nullable)responseMessage gatewayReferenceId:(NSString * _Nullable)gatewayReferenceId orderId:(NSString * _Nullable)orderId merchantId:(NSString * _Nullable)merchantId merchantName:(NSString * _Nullable)merchantName merchantAmount:(NSString * _Nullable)merchantAmount merchantCurrency:(NSString * _Nullable)merchantCurrency subscriberAmount:(NSString * _Nullable)subscriberAmount subscriberCurrency:(NSString * _Nullable)subscriberCurrency OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, readonly, copy) NSString * _Nonnull description;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -907,11 +918,10 @@ SWIFT_CLASS("_TtC17TerraPayWalletSDK23TerraPayWalletSDKConfig")
 @property (nonatomic, readonly, copy) NSString * _Nonnull subscriberName;
 @property (nonatomic, readonly, copy) NSString * _Nonnull subscriberMSISDN;
 @property (nonatomic, readonly, copy) NSString * _Nonnull subscriberCurrency;
-@property (nonatomic, readonly, copy) NSString * _Nullable walletBalance;
 @property (nonatomic, readonly, copy) NSString * _Nonnull primaryColor;
 @property (nonatomic, readonly, copy) NSString * _Nonnull secondaryColor;
-@property (nonatomic, readonly) enum TPEnvironment environment;
-- (nonnull instancetype)initWithController:(UIViewController * _Nonnull)controller accessToken:(NSString * _Nonnull)accessToken refreshToken:(NSString * _Nonnull)refreshToken subscriberDialCode:(NSString * _Nonnull)subscriberDialCode subscriberCountry:(NSString * _Nonnull)subscriberCountry subscriberCountryName:(NSString * _Nonnull)subscriberCountryName subscriberName:(NSString * _Nonnull)subscriberName subscriberMSISDN:(NSString * _Nonnull)subscriberMSISDN subscriberCurrency:(NSString * _Nonnull)subscriberCurrency walletBalance:(NSString * _Nullable)walletBalance primaryColor:(NSString * _Nonnull)primaryColor secondaryColor:(NSString * _Nonnull)secondaryColor environment:(enum TPEnvironment)environment OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantCountry;
+@property (nonatomic, readonly, copy) NSString * _Nullable merchantAcquirer;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end

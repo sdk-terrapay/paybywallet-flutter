@@ -23,7 +23,13 @@ import os
   @objc final public let responseMessage: Swift::String?
   @objc final public let gatewayReferenceId: Swift::String?
   @objc final public let orderId: Swift::String?
-  @objc public init(responseStatus: Swift::String?, responseMessage: Swift::String?, gatewayReferenceId: Swift::String?, orderId: Swift::String?)
+  @objc final public let merchantId: Swift::String?
+  @objc final public let merchantName: Swift::String?
+  @objc final public let merchantAmount: Swift::String?
+  @objc final public let merchantCurrency: Swift::String?
+  @objc final public let subscriberAmount: Swift::String?
+  @objc final public let subscriberCurrency: Swift::String?
+  @objc public init(responseStatus: Swift::String?, responseMessage: Swift::String?, gatewayReferenceId: Swift::String?, orderId: Swift::String?, merchantId: Swift::String?, merchantName: Swift::String?, merchantAmount: Swift::String?, merchantCurrency: Swift::String?, subscriberAmount: Swift::String?, subscriberCurrency: Swift::String?)
   @objc override dynamic public var description: Swift::String {
     @objc get
   }
@@ -65,11 +71,15 @@ public typealias TerraPayCompletionHandler = (TerraPayWalletSDK::TPLaunchType, T
   @objc final public let subscriberName: Swift::String
   @objc final public let subscriberMSISDN: Swift::String
   @objc final public let subscriberCurrency: Swift::String
-  @objc final public let walletBalance: Swift::String?
   @objc final public let primaryColor: Swift::String
   @objc final public let secondaryColor: Swift::String
-  @objc final public let environment: TerraPayWalletSDK::TPEnvironment
-  @objc public init(controller: UIKit::UIViewController, accessToken: Swift::String, refreshToken: Swift::String, subscriberDialCode: Swift::String, subscriberCountry: Swift::String, subscriberCountryName: Swift::String, subscriberName: Swift::String, subscriberMSISDN: Swift::String, subscriberCurrency: Swift::String, walletBalance: Swift::String? = nil, primaryColor: Swift::String, secondaryColor: Swift::String, environment: TerraPayWalletSDK::TPEnvironment)
+  final public let environment: TerraPayWalletSDK::TPEnvironment?
+  final public let walletBalance: Swift::Double?
+  @objc final public let merchantCountry: Swift::String?
+  @objc final public let merchantAcquirer: Swift::String?
+  final public let transactionMinLimit: Swift::Double?
+  final public let transactionMaxLimit: Swift::Double?
+  public init(controller: UIKit::UIViewController, accessToken: Swift::String, refreshToken: Swift::String, subscriberDialCode: Swift::String, subscriberCountry: Swift::String, subscriberCountryName: Swift::String, subscriberName: Swift::String, subscriberMSISDN: Swift::String, subscriberCurrency: Swift::String, primaryColor: Swift::String, secondaryColor: Swift::String, environment: TerraPayWalletSDK::TPEnvironment? = .sandbox, walletBalance: Swift::Double? = nil, merchantCountry: Swift::String? = nil, merchantAcquirer: Swift::String? = nil, transactionMinLimit: Swift::Double? = nil, transactionMaxLimit: Swift::Double? = nil)
   @objc deinit
 }
 @objc @objcMembers final public class TPErrorInfo : ObjectiveC::NSObject {

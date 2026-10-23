@@ -75,16 +75,16 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
       return
     }
     guard let controller = hostController else {
-      result(Self.error("INVALID_CONTEXT", "No visible view controller to present from."))
+      result(Self.error("ERR_INVALID_CONTEXT", "No visible view controller to present from."))
       return
     }
 
-    // The iOS SDK takes the balance as a string; Dart sends a number.
-    let walletBalance: String?
-    switch args["walletBalance"] {
-    case let value as NSNumber: walletBalance = value.stringValue
-    case let value as String: walletBalance = value
-    default: walletBalance = nil
+    func double(_ key: String) -> Double? {
+      switch args[key] {
+      case let value as NSNumber: return value.doubleValue
+      case let value as String: return Double(value)
+      default: return nil
+      }
     }
 
     let environment: TPEnvironment =
@@ -100,10 +100,14 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
       subscriberName: args["subscriberName"] as? String ?? "",
       subscriberMSISDN: args["subscriberMSISDN"] as? String ?? "",
       subscriberCurrency: args["subscriberCurrency"] as? String ?? "",
-      walletBalance: walletBalance,
       primaryColor: args["primaryColor"] as? String ?? "",
       secondaryColor: args["secondaryColor"] as? String ?? "",
-      environment: environment
+      environment: environment,
+      walletBalance: double("walletBalance"),
+      merchantCountry: args["merchantCountry"] as? String,
+      merchantAcquirer: args["merchantAcquirer"] as? String,
+      transactionMinLimit: double("transactionMinLimit"),
+      transactionMaxLimit: double("transactionMaxLimit")
     )
 
     watchForSilentDismissal(from: controller)
@@ -114,14 +118,10 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
   }
 
   private func processPayment(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    guard
-      let args = call.arguments as? [String: Any],
-      let transactionId = args["transactionId"] as? String,
-      !transactionId.isEmpty
-    else {
-      result(Self.error("INVALID_TRANSACTION_ID", "transactionId is required."))
-      return
-    }
+    // The SDK validates the id itself and reports ERR_INVALID_TRANSACTION_ID
+    // through its completion handler (forwarded as onError).
+    let args = call.arguments as? [String: Any]
+    let transactionId = args?["transactionId"] as? String ?? ""
     let controller = hostController
     watchForSilentDismissal(from: controller)
     TerraPayWalletClient.shared.processPayment(
@@ -216,6 +216,12 @@ public class PayByWalletPlugin: NSObject, FlutterPlugin {
       "responseMessage": responseMessage as Any,
       "gatewayReferenceId": status?.gatewayReferenceId as Any,
       "orderId": status?.orderId as Any,
+      "merchantId": status?.merchantId as Any,
+      "merchantName": status?.merchantName as Any,
+      "merchantAmount": status?.merchantAmount as Any,
+      "merchantCurrency": status?.merchantCurrency as Any,
+      "subscriberAmount": status?.subscriberAmount as Any,
+      "subscriberCurrency": status?.subscriberCurrency as Any,
     ]
   }
 

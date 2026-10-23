@@ -33,7 +33,7 @@ dependencies:
   paybywallet_flutter:
     git:
       url: https://github.com/sdk-terrapay/paybywallet-flutter.git
-      ref: v1.0.0
+      ref: v1.1.0
 ```
 
 ```sh
@@ -262,11 +262,11 @@ go-live date.
 | `primaryColor` | Yes | Valid 6-digit hex code, no `#` (e.g. `EC1B24`) |
 | `secondaryColor` | Yes | Valid 6-digit hex code, no `#` (e.g. `FFFFFF`) |
 | `environment` | No | `sandbox` (default) or `production` |
-| `walletBalance` | No | Numeric; omit to leave the balance unset |
+| `walletBalance` | No | Numeric, greater than zero; omit to leave the balance unset |
 | `merchantCountry` | No | Merchant's country selected by the user in the Mixx app; ISO 3166-1 alpha-2 (e.g. `KE`) |
-| `merchantAcquirer` | No | PSP ID of the merchant's provider selected by the user in the Mixx app (e.g. `'25403'`) |
-| `transactionMinLimit` | No | Numeric; minimum amount allowed per transaction, in Merchant's Currency |
-| `transactionMaxLimit` | No | Numeric; maximum amount allowed per transaction, in Merchant's Currency |
+| `merchantAcquirer` | No | PSP ID of the merchant's provider selected by the user in the Mixx app (e.g. `'25403'`); letters and digits only; requires `merchantCountry` |
+| `transactionMinLimit` | No | Numeric, greater than zero; minimum amount allowed per transaction, in Merchant's Currency |
+| `transactionMaxLimit` | No | Numeric, greater than zero and not less than `transactionMinLimit`; maximum amount allowed per transaction, in Merchant's Currency |
 
 #### 1. Import the SDK
 
@@ -300,9 +300,10 @@ await sdk.launch(PayByWalletConfig(
 ));
 ```
 
-`launch()` validates the configuration natively and throws a
-`PlatformException` if it is rejected, so you can `await` it and surface the
-error immediately rather than waiting for a callback.
+`launch()` validates the configuration natively. On Android a rejected
+configuration throws a `PlatformException`, so you can `await` it and surface
+the error immediately. On iOS the SDK reports it as an `SdkErrorEvent` on the
+event stream instead, so handle both.
 
 #### 3. Handle the SDK results
 
@@ -335,7 +336,7 @@ void initState() {
         break;                        // user cancelled the flow
 
       case SdkClosedEvent():
-        break;                        // iOS only: UI dismissed, no result
+        break;                        // UI dismissed without a result
     }
   });
 }
@@ -374,6 +375,12 @@ const PaymentResult({
   this.responseMessage,
   this.gatewayReferenceId,
   this.orderId,
+  this.merchantId,
+  this.merchantName,
+  this.merchantAmount,
+  this.merchantCurrency,
+  this.subscriberAmount,
+  this.subscriberCurrency,
 });
 ```
 
@@ -383,6 +390,12 @@ const PaymentResult({
 | `responseMessage` | `String?` | Human-readable message describing the outcome |
 | `gatewayReferenceId` | `String?` | TerraPay gateway reference for the transaction; quote it to support |
 | `orderId` | `String?` | The order id you passed to `processPayment` |
+| `merchantId` | `String?` | ID of the merchant that was paid |
+| `merchantName` | `String?` | Name of the merchant that was paid |
+| `merchantAmount` | `String?` | Amount credited to the merchant, in `merchantCurrency` |
+| `merchantCurrency` | `String?` | Merchant's currency, ISO 4217 |
+| `subscriberAmount` | `String?` | Amount debited from the subscriber, in `subscriberCurrency` |
+| `subscriberCurrency` | `String?` | Subscriber's currency, ISO 4217 |
 
 Every field is nullable, so check for `null` before displaying or storing a
 value:
@@ -390,6 +403,10 @@ value:
 ```dart
 case PaymentSuccessEvent(:final result):
   print('Order ${result.orderId} paid, ref ${result.gatewayReferenceId}');
+  if (result.merchantName != null) {
+    print('Paid ${result.merchantName} '
+        '${result.merchantCurrency} ${result.merchantAmount}');
+  }
 
 case PaymentFailureEvent(:final result):
   print('Payment failed: ${result.responseMessage ?? 'unknown error'}');
@@ -399,29 +416,46 @@ case PaymentFailureEvent(:final result):
 
 `SdkErrorEvent.code`, and the `code` on a thrown `PlatformException`:
 
-| Code | Meaning |
+| Code | Message |
 | --- | --- |
-| `INVALID_CONTEXT` | `MainActivity` does not extend `FlutterFragmentActivity` |
-| `INVALID_DIAL_CODE` | `subscriberDialCode` is not `+` followed by digits |
-| `INVALID_MSISDN` | MSISDN empty, non-numeric, or wrong length for the country |
-| `INVALID_NAME` | `subscriberName` is empty |
-| `INVALID_COUNTRY_CODE` | Not a valid ISO 3166-1 alpha-2 code |
-| `INVALID_COUNTRY_NAME` | `subscriberCountryName` is empty |
-| `INVALID_CURRENCY` | Not a valid ISO 4217 code |
-| `INVALID_WALLET_BALANCE` | Balance missing or not a number |
-| `INVALID_PRIMARY_COLOR` | Not a 6-digit hex value |
-| `INVALID_SECONDARY_COLOR` | Not a 6-digit hex value |
-| `INVALID_TRANSACTION_ID` | `processPayment` called with an empty order id |
-| `NETWORK_ERROR` | The device could not reach the gateway |
-| `SDK_CLOSED` | The SDK flow closed before completing |
+| `ERR_INVALID_CONTEXT` | Context must be ComponentActivity - an Activity or Application context (`MainActivity` must extend `FlutterFragmentActivity`). |
+| `ERR_INVALID_ACCESS_TOKEN` | Access Token is invalid or empty. |
+| `ERR_INVALID_REFRESH_TOKEN` | Refresh Token is invalid or empty. |
+| `ERR_INVALID_DIAL_CODE` | Dial code format is invalid. |
+| `ERR_INVALID_MSISDN` | MSISDN format is invalid or empty. |
+| `ERR_INVALID_SUBSCRIBER_NAME` | Subscriber name is empty or invalid. |
+| `ERR_INVALID_COUNTRY_CODE` | Subscriber country code is not a valid ISO 3166-1 alpha-2 code. |
+| `ERR_INVALID_COUNTRY_NAME` | Subscriber country name is empty or invalid. (Android) |
+| `ERR_INVALID_SUBSCRIBER_COUNTRY` | Subscriber country is invalid. (iOS) |
+| `ERR_INVALID_CURRENCY` | Subscriber currency code is not a valid ISO 4217 code. |
+| `ERR_INVALID_PRIMARY_COLOR` | Primary color must be a valid hex string format (e.g., #FFFFFF). |
+| `ERR_INVALID_SECONDARY_COLOR` | Secondary color must be a valid hex string format (e.g., #FFFFFF). |
+| `ERR_INVALID_WALLET_BALANCE` | Wallet balance must be a number greater than zero. |
+| `ERR_INSUFFICIENT_BALANCE` | You don't have enough wallet balance to perform transactions. (Android) |
+| `ERR_INVALID_TRANSACTION_ID` | TransactionId is required to process the payment. (`processPayment` called with an empty order id; thrown as a `PlatformException` on Android, delivered as an `SdkErrorEvent` on iOS.) |
+
+### Merchant and transaction-limit parameters
+
+Validation of the optional `merchantCountry`, `merchantAcquirer`,
+`transactionMinLimit` and `transactionMaxLimit` parameters. Values left out
+(or empty strings) are skipped; only values you provide are checked.
+
+| Code | Message |
+| --- | --- |
+| `ERR_INVALID_MERCHANT_COUNTRY_CODE` | Merchant country code is not a valid ISO 3166-1 alpha-2 code. (iOS reports this as `ERR_INVALID_MERCHANT_COUNTRY`.) |
+| `ERR_INVALID_MERCHANT_ACQUIRER` | Merchant acquirer format is invalid. |
+| `ERR_MERCHANT_REQUIRED` | Merchant country is required when merchant acquirer is provided. |
+| `ERR_INVALID_TRANSACTION_MINLIMIT` | Minimum transaction limit must be greater than zero. |
+| `ERR_INVALID_TRANSACTION_MAXLIMIT` | Maximum transaction limit must be greater than zero. |
+| `ERR_INVALID_TRANSACTION_LIMIT_RANGE` | Minimum transaction limit cannot be greater than maximum transaction limit. |
 
 ## 🧩 Troubleshooting
 
 | Symptom | Cause |
 | --- | --- |
-| `INVALID_CONTEXT` on first launch | `MainActivity` still extends `FlutterActivity` |
+| `ERR_INVALID_CONTEXT` on first launch | `MainActivity` still extends `FlutterActivity` |
 | `MissingPluginException … com.terrapay.paybywallet/sdk` | Full restart needed after adding the dependency — hot reload does not register plugins |
-| Blank white screen on iOS 26+ | Missing `UIApplicationSceneManifest` |
+| Blank white screen on launch (built with Xcode 27+) | Missing `UIApplicationSceneManifest` |
 | Camera preview black, or crash when scanning | `NSCameraUsageDescription` missing, or camera permission denied |
 | Release build works but payments silently fail | Custom ProGuard rules stripping the SDK — the package ships the required keep-rules, do not exclude them |
 | Gradle fails with a bare version number | Wrong JDK; build with JDK 17 |

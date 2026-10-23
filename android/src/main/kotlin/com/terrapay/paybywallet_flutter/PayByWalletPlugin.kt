@@ -18,6 +18,7 @@ import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import java.math.BigDecimal
 
 /**
  * Android half of the PayByWallet bridge.
@@ -120,7 +121,7 @@ class PayByWalletPlugin :
         val current = activity
         if (current is ComponentActivity) return current
         result.error(
-            "INVALID_CONTEXT",
+            "ERR_INVALID_CONTEXT",
             "PayByWallet needs a ComponentActivity. Make your MainActivity extend " +
                 "io.flutter.embedding.android.FlutterFragmentActivity instead of FlutterActivity.",
             null,
@@ -131,13 +132,16 @@ class PayByWalletPlugin :
     private fun launch(call: MethodCall, result: MethodChannel.Result) {
         val activity = requireComponentActivity(result) ?: return
 
-        val balance = when (val raw = call.argument<Any>("walletBalance")) {
-            is Number -> raw.toDouble()
-            is String -> raw.toDoubleOrNull()
-            else -> null
-        }
-        if (balance == null) {
-            result.error("INVALID_WALLET_BALANCE", "walletBalance must be a number.", null)
+        // Optional: absent leaves the balance unset, anything else must be a
+        // number greater than zero. The Android SDK does not check this itself,
+        // so mirror the iOS SDK's rule and error code here.
+        val balance = optionalDouble(call, "walletBalance")
+        if (balance != null && !(balance.isFinite() && balance > 0)) {
+            result.error(
+                "ERR_INVALID_WALLET_BALANCE",
+                "walletBalance must be a number greater than zero.",
+                null,
+            )
             return
         }
 
@@ -156,6 +160,10 @@ class PayByWalletPlugin :
             subscriberDialCode = call.argument<String>("subscriberDialCode").orEmpty(),
             subscriberMSISDN = call.argument<String>("subscriberMSISDN").orEmpty(),
             walletBalance = balance,
+            merchantCountry = call.argument<String>("merchantCountry").orEmpty(),
+            merchantAcquirer = call.argument<String>("merchantAcquirer").orEmpty(),
+            transactionMinLimit = optionalDouble(call, "transactionMinLimit"),
+            transactionMaxLimit = optionalDouble(call, "transactionMaxLimit"),
             subscriberCountryName = call.argument<String>("subscriberCountryName").orEmpty(),
             subscriberCountry = call.argument<String>("subscriberCountry").orEmpty(),
             subscriberCurrency = call.argument<String>("subscriberCurrency").orEmpty(),
@@ -181,11 +189,23 @@ class PayByWalletPlugin :
         result.success(null)
     }
 
+    /** Null when absent; NaN when present but not numeric, so validation rejects it. */
+    private fun optionalDouble(call: MethodCall, key: String): Double? =
+        when (val raw = call.argument<Any>(key)) {
+            null -> null
+            is Number -> raw.toDouble()
+            is String -> raw.toDoubleOrNull() ?: Double.NaN
+            else -> Double.NaN
+        }
+
     private fun processPayment(call: MethodCall, result: MethodChannel.Result) {
         val activity = requireComponentActivity(result) ?: return
-        val transactionId = call.argument<String>("transactionId")
-        if (transactionId.isNullOrBlank()) {
-            result.error("INVALID_TRANSACTION_ID", "transactionId is required.", null)
+        val transactionId = call.argument<String>("transactionId").orEmpty()
+        // Same pre-check the SDK's processPayment runs; calling it here returns
+        // the SDK's own error as a failed call, as launch does with
+        // validateInputFields, instead of an asynchronous onError.
+        TerraPayClient.validateOTP(transactionId)?.let { error ->
+            result.error(error.code, error.message, null)
             return
         }
         TerraPayClient.processPayment(context = activity, transactionId = transactionId)
@@ -228,10 +248,18 @@ class PayByWalletPlugin :
             send("onCancelled", mapOf("code" to errorCode, "message" to message))
     }
 
+    // Same keys as the iOS bridge. The Android SDK reports amounts as Double
+    // while iOS sends strings, so amounts are stringified to keep one Dart type.
     private fun TPPaymentStatus.toMap(): Map<String, Any?> = mapOf(
         "responseStatus" to responseStatus,
         "responseMessage" to responseMessage,
         "gatewayReferenceId" to gatewayReferenceId,
         "orderId" to orderId,
+        "merchantId" to merchantId,
+        "merchantName" to merchantName,
+        "merchantAmount" to BigDecimal.valueOf(merchantAmount).toPlainString(),
+        "merchantCurrency" to merchantCurrency,
+        "subscriberAmount" to BigDecimal.valueOf(subscriberAmount).toPlainString(),
+        "subscriberCurrency" to subscriberCurrency,
     )
 }
